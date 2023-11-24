@@ -4,7 +4,16 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            double[] probabilities = { 50, 30, 15, 5, 1 };
+            Random rand = new Random();
+
+            int i = 0;
+            while (rand.Next(1, 101) >= probabilities[i]) {
+                i++;
+            }
+            int degree = i;
+
+
         }
     }
 }
