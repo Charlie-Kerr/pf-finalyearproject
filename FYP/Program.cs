@@ -73,6 +73,11 @@
             this.parts = parts;
             this.data = data;
         }
-    
+
+        public override string ToString()
+        {
+            return String.Format("Drop degree is {0}\nThe drops in this drop: {1}", parts.Length, data.ToString());
+        }
+
     }
 }
