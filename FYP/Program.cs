@@ -8,24 +8,28 @@
             String[] data = { "First", "House", "Mouse", "Shelf", "Books"};
             String[] drop;
             int degree;
+            int[] parts;
+            List<Drop> drops = new List<Drop>();
 
 
 
             for (int i = 0; i < data.Length*2; i++) 
             {
                 degree = getDegree();
+                drop = new string[degree];
+                parts = new int[degree];
                 for (int j = 0; j < degree; j++)
                 {
                     if (j == 0)
                     {
-                        drop = new string[degree];
                         drop[0] = data[rand.Next(0, data.Length)];
+                        parts[0] = Array.IndexOf(data, drop[0]);
                     }
                     else
                     {
-                        //drop.Append(data[rand.Next(0, data.Length)]);
+                        drop[j] = (data[rand.Next(0, data.Length)]);
                     }
-                    //XOR(drop, degree);
+                    drops.Add(new Drop(parts, drop));
                 }
 
             }
@@ -49,5 +53,18 @@
             }
             return -1; // a run should never reach here
         }
+    }
+
+    class Drop
+    {
+        public int[] parts;
+        public String[] data;
+
+        public Drop(int[] parts, String[] data) 
+        {
+            this.parts = parts;
+            this.data = data;
+        }
+    
     }
 }
