@@ -12,12 +12,17 @@
             List<Drop> drops = new List<Drop>();
 
 
-
+            //this first loop is arbitrary and will be replaced by broadcasting method
             for (int i = 0; i < data.Length*2; i++) 
             {
                 degree = getDegree();
+                if (i == 0)
+                {
+                    degree = 1;
+                }
                 drop = new string[degree];
                 parts = new int[degree];
+                //second loop is where droplet generation happens
                 for (int j = 0; j < degree; j++)
                 {
                     if (j == 0)
@@ -31,7 +36,10 @@
                     }
                     drops.Add(new Drop(parts, drop));
                 }
-
+            }
+            foreach (Drop d in drops) 
+            { 
+                Console.WriteLine(d.ToString());
             }
 
         }
@@ -47,7 +55,7 @@
             {
                 if (degree >= p)
                 {
-                    degree = Array.IndexOf(probabilities, p);
+                    degree = Array.IndexOf(probabilities, p) + 1;
                     return degree;
                 }
             }
