@@ -6,8 +6,15 @@ namespace FYP
     {
         static void Main(string[] args)
         {
-            Random rand = new Random();
             String[] data = { "First", "House", "Mouse", "Shelf", "Books"};
+            List<Drop> drops = generateDroplets(data);
+
+
+        }
+
+        static List<Drop> generateDroplets(String[] data) 
+        {
+            Random rand = new Random();
             String[] drop;
             int degree;
             int[] parts;
@@ -15,7 +22,7 @@ namespace FYP
 
 
             //this first loop is arbitrary and will be replaced by broadcasting method
-            for (int i = 0; i < data.Length*2; i++) 
+            for (int i = 0; i < data.Length * 2; i++)
             {
                 degree = getDegree();
                 if (i == 0)
@@ -39,11 +46,11 @@ namespace FYP
                 }
                 drops.Add(new Drop(parts, drop));
             }
-            foreach (Drop d in drops) 
-            { 
-                Console.WriteLine(d.ToString());
-            }
-
+            //foreach (Drop d in drops)
+            //{
+            //    Console.WriteLine(d.ToString());
+            //}
+            return drops;
         }
 
         static int getDegree() {
