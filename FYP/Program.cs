@@ -1,4 +1,6 @@
-﻿namespace FYP
+﻿using System.Globalization;
+
+namespace FYP
 {
     internal class Program
     {
@@ -34,8 +36,8 @@
                     {
                         drop[j] = (data[rand.Next(0, data.Length)]);
                     }
-                    drops.Add(new Drop(parts, drop));
                 }
+                drops.Add(new Drop(parts, drop));
             }
             foreach (Drop d in drops) 
             { 
@@ -76,7 +78,7 @@
 
         public override string ToString()
         {
-            return String.Format("Drop degree is {0}\nThe drops in this drop: {1}", parts.Length, data.ToString());
+            return String.Format("Drop degree is {0}\nThe drops in this drop: {1}", parts.Length, string.Join(",", data));
         }
 
     }
