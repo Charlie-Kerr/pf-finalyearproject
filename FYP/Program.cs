@@ -4,16 +4,26 @@
     {
         static void Main(string[] args)
         {
-            double[] probabilities = { 50, 30, 15, 5, 1 };
+            
+
+        }
+
+        static int getDegree() {
+            int[] probabilities = { 50, 30, 15, 5, 1 };
             Random rand = new Random();
 
             int i = 0;
-            while (rand.Next(1, 101) >= probabilities[i]) {
-                i++;
+            int degree = rand.Next(1, 101);
+
+            foreach (int p in probabilities)
+            {
+                if (degree >= p)
+                {
+                    degree = Array.IndexOf(probabilities, p);
+                    return degree;
+                }
             }
-            int degree = i;
-
-
+            return -1; // a run should never reach here
         }
     }
 }
