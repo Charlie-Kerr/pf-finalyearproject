@@ -12,6 +12,16 @@ namespace FYP
 
         }
 
+        static Drop encode(Drop d)
+        {
+            string result = d.data[0];
+            for (int i = 1; i < d.parts.Count(); i++)
+            {
+                //need to use ^= operator to XOR the data, need to start using correct data types
+            }
+            return d; //return result
+        }
+
         static List<Drop> generateDroplets(String[] data) 
         {
             Random rand = new Random();
