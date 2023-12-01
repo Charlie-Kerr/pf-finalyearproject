@@ -9,25 +9,26 @@ namespace FYP
         static void Main(string[] args)
         {
             String[] data = { "First", "House", "Mouse", "Shelf", "Books"};
-            List<Drop> drops = generateDroplets(data);
+            string plain = "This text is a test of the encoding and decoding system.";
+            List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(plain));
 
 
         }
 
-        static byte encode(byte[] data, int[] parts)
+        static byte[] encode(byte[] data, int[] parts)
         {
             byte result = data[0];
             for (int i = 1; i < parts.Count(); i++)
             {
                 result ^= data[i];
             }
-            return result;
+            return new byte[] { result };
         }
 
-        static List<Drop> generateDroplets(String[] plain) 
+        static List<Drop> generateDroplets(byte[] plain) 
         {
             Random rand = new Random();
-            List<byte[]> data = new List<byte[]>();
+            byte[] data = new byte[degree];
             int dropletDegree;
             int[] parts = new int[degree];
             List<Drop> drops = new List<Drop>();
@@ -48,15 +49,15 @@ namespace FYP
                 {
                     if (j == 0)
                     {
-                        data.Add(Encoding.ASCII.GetBytes(plain[rand.Next(0, plain.Length)]));
+                        data[0] = (plain[rand.Next(0, plain.Length)]);
                         parts[0] = Array.IndexOf(plain, data[0]);
                     }
                     else
                     {
-                        data[j] = Encoding.ASCII.GetBytes(plain[rand.Next(0, plain.Length)]);
+                        data[j] = plain[rand.Next(0, plain.Length)];
                     }
                 }
-                drops.Add(new Drop(parts, data[i]));
+                drops.Add(new Drop(parts, encode(data, parts)));
             }
             return drops;
         }
