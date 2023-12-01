@@ -1,9 +1,11 @@
 ﻿using System.Globalization;
+using System.Text;
 
 namespace FYP
 {
     internal class Program
     {
+        public const int degree = 5; // will be attribute of encoder class
         static void Main(string[] args)
         {
             String[] data = { "First", "House", "Mouse", "Shelf", "Books"};
@@ -12,49 +14,49 @@ namespace FYP
 
         }
 
-        static Drop encode(Drop d)
+        static byte encode(byte[] data, int[] parts)
         {
-            string result = d.data[0];
-            for (int i = 1; i < d.parts.Count(); i++)
+            byte result = data[0];
+            for (int i = 1; i < parts.Count(); i++)
             {
-                //need to use ^= operator to XOR the data, need to start using correct data types
+                result ^= data[i];
             }
-            return d; //return result
+            return result;
         }
 
-        static List<Drop> generateDroplets(String[] data) 
+        static List<Drop> generateDroplets(String[] plain) 
         {
             Random rand = new Random();
-            String[] drop;
-            int degree;
-            int[] parts;
+            List<byte[]> data = new List<byte[]>();
+            int dropletDegree;
+            int[] parts = new int[degree];
             List<Drop> drops = new List<Drop>();
 
 
             //this first loop is arbitrary and will be replaced by broadcasting method
-            for (int i = 0; i < data.Length * 2; i++)
+            for (int i = 0; i < plain.Length * 2; i++)
             {
-                degree = getDegree();
+                dropletDegree = getDegree();
+                //first drop should be degree 1 to make sure decoding process can happen
                 if (i == 0)
                 {
-                    degree = 1;
+                    dropletDegree = 1;
                 }
-                drop = new string[degree];
-                parts = new int[degree];
+
                 //second loop is where droplet generation happens
-                for (int j = 0; j < degree; j++)
+                for (int j = 0; j < dropletDegree; j++)
                 {
                     if (j == 0)
                     {
-                        drop[0] = data[rand.Next(0, data.Length)];
-                        parts[0] = Array.IndexOf(data, drop[0]);
+                        data.Add(Encoding.ASCII.GetBytes(plain[rand.Next(0, plain.Length)]));
+                        parts[0] = Array.IndexOf(plain, data[0]);
                     }
                     else
                     {
-                        drop[j] = (data[rand.Next(0, data.Length)]);
+                        data[j] = Encoding.ASCII.GetBytes(plain[rand.Next(0, plain.Length)]);
                     }
                 }
-                drops.Add(new Drop(parts, drop));
+                drops.Add(new Drop(parts, data[i]));
             }
             return drops;
         }

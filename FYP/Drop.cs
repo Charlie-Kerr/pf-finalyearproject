@@ -9,9 +9,9 @@ namespace FYP
     internal class Drop
     {
         public int[] parts;
-        public String[] data;
+        public byte[] data;
 
-        public Drop(int[] parts, String[] data)
+        public Drop(int[] parts, byte[] data)
         {
             this.parts = parts;
             this.data = data;
