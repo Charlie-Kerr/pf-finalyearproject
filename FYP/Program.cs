@@ -8,10 +8,10 @@ namespace FYP
         public const int degree = 5; // will be attribute of encoder class
         static void Main(string[] args)
         {
-            String[] data = { "First", "House", "Mouse", "Shelf", "Books"};
+            String[] data = {"First", "House", "Mouse", "Shelf", "Books"};
             string plain = "This text is a test of the encoding and decoding system.";
             List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(plain));
-
+            
 
         }
 
@@ -25,12 +25,24 @@ namespace FYP
             return new byte[] { result };
         }
 
+        static byte[] decode(Drop drop) 
+        {
+
+            return null;
+        }
+
+        static string rebuildPlaintext(List<Drop> goblet) 
+        {
+
+            return null;
+        }
+
         static List<Drop> generateDroplets(byte[] plain) 
         {
             Random rand = new Random();
             byte[] data = new byte[degree];
             int dropletDegree;
-            int[] parts = new int[degree];
+            int[] parts;
             List<Drop> drops = new List<Drop>();
 
 
@@ -38,6 +50,7 @@ namespace FYP
             for (int i = 0; i < plain.Length * 2; i++)
             {
                 dropletDegree = getDegree();
+                parts = new int[dropletDegree];
                 //first drop should be degree 1 to make sure decoding process can happen
                 if (i == 0)
                 {
@@ -55,9 +68,11 @@ namespace FYP
                     else
                     {
                         data[j] = plain[rand.Next(0, plain.Length)];
+                        parts[j] = Array.IndexOf(plain, data[j]);
                     }
                 }
                 drops.Add(new Drop(parts, encode(data, parts)));
+                Console.WriteLine(drops.Last().ToString());
             }
             return drops;
         }
