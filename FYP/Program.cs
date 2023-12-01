@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace FYP
@@ -44,13 +45,17 @@ namespace FYP
                 dCount = 0;
                 if (drop.parts.Length == 1 && decoded[drop.parts[0]] == 0)
                 {
-                    if (decoded[drop.parts[0]] == 0) 
-                    { 
+                    if (decoded[drop.parts[0]] == 0)
+                    {
                         decoded[drop.parts[0]] = drop.data[0];
                         parts.Add(drop.parts[0]);
                     }
                     //else we discard the drop from the goblet, we already have a solution for it
                 }
+                else if (parts.Intersect(drop.parts) != null) 
+                { 
+                    //else we discard the drop from the goblet, we already have the solutions for all the parts that are in the drop
+                } 
                 else
                 {
                     //multi-part drops
