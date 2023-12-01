@@ -11,6 +11,8 @@ namespace FYP
             String[] data = {"First", "House", "Mouse", "Shelf", "Books"};
             string plain = "This text is a test of the encoding and decoding system.";
             List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(plain));
+            //test decode and rebuilding plaintext functions by printing decoded text to console, 
+            Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(plain)));
             
 
         }
@@ -27,13 +29,39 @@ namespace FYP
 
         static byte[] decode(Drop drop) 
         {
-
             return null;
         }
 
-        static string rebuildPlaintext(List<Drop> goblet) 
+        static string rebuildPlaintext(List<Drop> goblet, int byteSize) 
         {
+            List<Drop> decodeBucket = new List<Drop>();
+            byte[] decoded = new byte[byteSize];
+            List<int> parts = new List<int>();
+            int dCount = 0;
 
+            foreach (Drop drop in goblet)
+            {
+                dCount = 0;
+                if (drop.parts.Length == 1 && decoded[drop.parts[0]] == 0)
+                {
+                    if (decoded[drop.parts[0]] == 0) 
+                    { 
+                        decoded[drop.parts[0]] = drop.data[0];
+                        parts.Add(drop.parts[0]);
+                    }
+                    //else we discard the drop from the goblet, we already have a solution for it
+                }
+                else
+                {
+                    //multi-part drops
+                    for (int i = 0; i < drop.parts.Length; i++) 
+                    { 
+                        
+                    }
+                    
+                }
+
+            }
             return null;
         }
 
