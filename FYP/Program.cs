@@ -52,7 +52,7 @@ namespace FYP
                     }
                     //else we discard the drop from the goblet, we already have a solution for it
                 }
-                else if (parts.Intersect(drop.parts) != null) 
+                else if (drop.parts.ToHashSet().IsSubsetOf(parts.ToHashSet())) //use hashset for comparisons
                 { 
                     //else we discard the drop from the goblet, we already have the solutions for all the parts that are in the drop
                 } 
@@ -114,7 +114,6 @@ namespace FYP
             int[] probabilities = { 50, 30, 15, 5, 1 };
             Random rand = new Random();
 
-            int i = 0;
             int degree = rand.Next(1, 101);
 
             foreach (int p in probabilities)
