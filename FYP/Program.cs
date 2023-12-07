@@ -14,21 +14,20 @@ namespace FYP
             string plain = "This text is a test of the encoding and decoding system.";
             List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(plain));
             //test decode and rebuilding plaintext functions by printing decoded text to console
-            int[] encodedParts = new int[100];
-            foreach (Drop drop in drops)
-            {
-                foreach (int part in drop.parts)
-                {
-                    encodedParts[part]++;
-                }
-            }
-            for (int i = 0; i < encodedParts.Length; i++) 
-            {
-                Console.WriteLine(i + ": " + encodedParts[i]);
-            }
-            //Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(plain)));
-            
 
+            //int[] encodedParts = new int[Encoding.ASCII.GetByteCount(plain)];
+            //foreach (Drop drop in drops)
+            //{
+            //    foreach (int part in drop.parts)
+            //    {
+            //        encodedParts[part]++;
+            //    }
+            //}
+            //for (int i = 0; i < encodedParts.Length; i++) 
+            //{
+            //    Console.WriteLine(i + ": " + encodedParts[i]);
+            //}
+            Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(plain)));
         }
 
         static byte[] encode(byte[] data, int[] parts)
