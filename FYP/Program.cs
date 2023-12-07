@@ -10,12 +10,16 @@ namespace FYP
         public const int degree = 5; // will be attribute of encoder class
         static void Main(string[] args)
         {
-            string plain = "This text is a test of the encoding and decoding system.";
+            //string plain = "This text is a test of the encoding and decoding system.";
+
             string longerPlain = File.ReadAllText("text.txt"); //from bin\debug\net6.0\text.txt
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(longerPlain));
+            watch.Stop();
+            var generateTime = watch.ElapsedMilliseconds;
             //test decode and rebuilding plaintext functions by printing decoded text to console
 
-            //int[] encodedParts = new int[Encoding.ASCII.GetByteCount(plain)];
+            //int[] encodedParts = new int[Encoding.ASCII.GetByteCount(longerPlain)];
             //foreach (Drop drop in drops)
             //{
             //    foreach (int part in drop.parts)
@@ -25,9 +29,19 @@ namespace FYP
             //}
             //for (int i = 0; i < encodedParts.Length; i++)
             //{
-            //    Console.WriteLine(i + ": " + encodedParts[i]);
+            //    if (encodedParts[i] == 0) 
+            //    {
+            //        Console.WriteLine(i);
+            //    }
+
+            //    //Console.WriteLine(i + ": " + encodedParts[i]);
             //}
+
+            watch.Restart();
             Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(longerPlain)));
+            watch.Stop();
+            var totalDecodetime = watch.ElapsedMilliseconds;
+            Console.WriteLine("Time taken to generate: " + generateTime + "\nTime taken to decode: " + totalDecodetime);
         }
 
         static byte[] encode(byte[] data, int[] parts)
@@ -106,7 +120,6 @@ namespace FYP
                             Console.WriteLine("Part " + drop.parts[dPosition] + " has been decoded. Drop had degree: " + drop.parts.Length);
                             //goblet.Remove(drop);
                         }
-
                     }
 
                     //checks if we have decoded the data
@@ -133,7 +146,7 @@ namespace FYP
 
 
             //this first loop is arbitrary and will be replaced by broadcasting method
-            for (int i = 0; i < plain.Length * 4; i++)
+            for (int i = 0; i < plain.Length * 5; i++)
             {
                 dropletDegree = getDegree();
                 parts = new int[dropletDegree];
