@@ -28,9 +28,17 @@ namespace FYP
             return new byte[] { result };
         }
 
-        static byte decode(Drop drop, byte[] decodedParts) 
+        static byte decode(Drop drop, byte[] decodedParts, int partToDecode) 
         {
-            return 0;
+            byte result = drop.data[partToDecode];
+            for (int i = 0; i < drop.parts.Length; i++) 
+            {
+                if (i != partToDecode) 
+                {
+                    result ^= decodedParts[drop.parts[i]]; //XORs the byte to decode with all the parts that were used to encode it
+                }
+            }
+            return result;
         }
 
         static string rebuildPlaintext(List<Drop> goblet, int byteSize) 
@@ -78,7 +86,7 @@ namespace FYP
 
                         if (dCount == drop.parts.Length - 1)
                         {
-                            decoded[drop.parts[dPosition]] = decode(drop, decoded); //consider parsing just the required bytes to decode the drop
+                            decoded[drop.parts[dPosition]] = decode(drop, decoded, dPosition); //consider parsing just the required bytes to decode the drop
                             goblet.Remove(drop);
                         }
 
