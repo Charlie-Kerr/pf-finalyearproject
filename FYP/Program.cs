@@ -13,8 +13,20 @@ namespace FYP
             String[] data = {"First", "House", "Mouse", "Shelf", "Books"};
             string plain = "This text is a test of the encoding and decoding system.";
             List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(plain));
-            //test decode and rebuilding plaintext functions by printing decoded text to console, 
-            Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(plain)));
+            //test decode and rebuilding plaintext functions by printing decoded text to console
+            int[] encodedParts = new int[100];
+            foreach (Drop drop in drops)
+            {
+                foreach (int part in drop.parts)
+                {
+                    encodedParts[part]++;
+                }
+            }
+            for (int i = 0; i < encodedParts.Length; i++) 
+            {
+                Console.WriteLine(i + ": " + encodedParts[i]);
+            }
+            //Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(plain)));
             
 
         }
@@ -57,12 +69,13 @@ namespace FYP
                 foreach (Drop drop in goblet)
                 {
                     dCount = 0;
-                    if (drop.parts.Length == 1 && decoded[drop.parts[0]] == 0)
+                    if (drop.parts.Length == 1)
                     {
                         if (decoded[drop.parts[0]] == 0)
                         {
                             decoded[drop.parts[0]] = drop.data[0];
                             parts.Add(drop.parts[0]);
+                            Console.WriteLine("Drop " + drop.parts[0] + " has been decoded");
                         }
                         //else we discard the drop from the goblet, we already have a solution for it
                     }
@@ -89,6 +102,7 @@ namespace FYP
                         if (dCount == drop.parts.Length - 1)
                         {
                             decoded[drop.parts[dPosition]] = decode(drop, decoded, dPosition); //consider parsing just the required bytes to decode the drop
+                            Console.WriteLine("Drop " + drop.parts[dPosition] + " has been decoded");
                             //goblet.Remove(drop);
                         }
 
@@ -109,6 +123,7 @@ namespace FYP
         static List<Drop> generateDroplets(byte[] plain) 
         {
             Random rand = new Random();
+            int randPart = 0;
             byte[] data = new byte[degree];
             int dropletDegree;
             int[] parts;
@@ -116,7 +131,7 @@ namespace FYP
 
 
             //this first loop is arbitrary and will be replaced by broadcasting method
-            for (int i = 0; i < plain.Length * 2; i++)
+            for (int i = 0; i < plain.Length * 4; i++)
             {
                 dropletDegree = getDegree();
                 parts = new int[dropletDegree];
@@ -129,15 +144,17 @@ namespace FYP
                 //second loop is where droplet generation happens
                 for (int j = 0; j < dropletDegree; j++)
                 {
+                    randPart = rand.Next(0, plain.Length);
                     if (j == 0)
                     {
-                        data[0] = (plain[rand.Next(0, plain.Length)]);
-                        parts[0] = Array.IndexOf(plain, data[0]);
+                        data[0] = plain[randPart];
+                        parts[0] = randPart;
+                        //Array.IndexOf(plain, data[0]);
                     }
                     else
                     {
-                        data[j] = plain[rand.Next(0, plain.Length)];
-                        parts[j] = Array.IndexOf(plain, data[j]);
+                        data[j] = plain[randPart];
+                        parts[j] = randPart;
                     }
                 }
                 drops.Add(new Drop(parts, encode(data, parts)));
@@ -147,7 +164,7 @@ namespace FYP
         }
 
         static int getDegree() {
-            int[] probabilities = { 50, 30, 15, 5, 1 };
+            int[] probabilities = { 50, 30, 15, 5, 1 }; //increase chance of 2s and decrease 4s and maybe 3s
             Random rand = new Random();
 
             int degree = rand.Next(1, 101);
