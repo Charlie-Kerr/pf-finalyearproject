@@ -28,9 +28,9 @@ namespace FYP
             return new byte[] { result };
         }
 
-        static byte[] decode(Drop drop) 
+        static byte decode(Drop drop, byte[] decodedParts) 
         {
-            return null;
+            return 0;
         }
 
         static string rebuildPlaintext(List<Drop> goblet, int byteSize) 
@@ -39,33 +39,52 @@ namespace FYP
             byte[] decoded = new byte[byteSize];
             List<int> parts = new List<int>();
             int dCount = 0;
+            int dPosition = 0;
+            bool allSolutionsFound = false;
 
-            foreach (Drop drop in goblet)
+            while (allSolutionsFound == false)
             {
-                dCount = 0;
-                if (drop.parts.Length == 1 && decoded[drop.parts[0]] == 0)
+                foreach (Drop drop in goblet)
                 {
-                    if (decoded[drop.parts[0]] == 0)
+                    dCount = 0;
+                    if (drop.parts.Length == 1 && decoded[drop.parts[0]] == 0)
                     {
-                        decoded[drop.parts[0]] = drop.data[0];
-                        parts.Add(drop.parts[0]);
+                        if (decoded[drop.parts[0]] == 0)
+                        {
+                            decoded[drop.parts[0]] = drop.data[0];
+                            parts.Add(drop.parts[0]);
+                        }
+                        //else we discard the drop from the goblet, we already have a solution for it
                     }
-                    //else we discard the drop from the goblet, we already have a solution for it
-                }
-                else if (drop.parts.ToHashSet().IsSubsetOf(parts.ToHashSet())) //use hashset for comparisons
-                { 
-                    //else we discard the drop from the goblet, we already have the solutions for all the parts that are in the drop
-                } 
-                else
-                {
-                    //multi-part drops
-                    for (int i = 0; i < drop.parts.Length; i++) 
-                    { 
-                        
+                    else if (drop.parts.ToHashSet().IsSubsetOf(parts.ToHashSet())) //use hashset for comparisons
+                    {
+                        //else we discard the drop from the goblet, we already have the solutions for all the parts that are in the drop
+                        goblet.Remove(drop);
                     }
-                    
-                }
+                    else
+                    {
+                        //multi-part drops
+                        for (int i = 0; i < drop.parts.Length; i++)
+                        {
+                            if (parts.Contains(drop.parts[i]))
+                            {
+                                dCount++;
+                            }
+                            else
+                            {
+                                dPosition = i;
+                            }
+                        }
 
+                        if (dCount == drop.parts.Length - 1)
+                        {
+                            decoded[drop.parts[dPosition]] = decode(drop, decoded); //consider parsing just the required bytes to decode the drop
+                            goblet.Remove(drop);
+                        }
+
+                    }
+
+                }
             }
             return null;
         }
