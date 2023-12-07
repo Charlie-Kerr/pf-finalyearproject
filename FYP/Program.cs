@@ -11,7 +11,8 @@ namespace FYP
         static void Main(string[] args)
         {
             string plain = "This text is a test of the encoding and decoding system.";
-            List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(plain));
+            string longerPlain = File.ReadAllText("text.txt"); //from bin\debug\net6.0\text.txt
+            List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(longerPlain));
             //test decode and rebuilding plaintext functions by printing decoded text to console
 
             //int[] encodedParts = new int[Encoding.ASCII.GetByteCount(plain)];
@@ -26,7 +27,7 @@ namespace FYP
             //{
             //    Console.WriteLine(i + ": " + encodedParts[i]);
             //}
-            Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(plain)));
+            Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(longerPlain)));
         }
 
         static byte[] encode(byte[] data, int[] parts)
@@ -159,7 +160,7 @@ namespace FYP
                     }
                 }
                 drops.Add(new Drop(parts, encode(data, parts)));
-                Console.WriteLine(drops.Last().ToString());
+                //Console.WriteLine(drops.Last().ToString());
             }
             return drops;
         }
