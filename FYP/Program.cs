@@ -10,7 +10,6 @@ namespace FYP
         public const int degree = 5; // will be attribute of encoder class
         static void Main(string[] args)
         {
-            String[] data = {"First", "House", "Mouse", "Shelf", "Books"};
             string plain = "This text is a test of the encoding and decoding system.";
             List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(plain));
             //test decode and rebuilding plaintext functions by printing decoded text to console
@@ -23,7 +22,7 @@ namespace FYP
             //        encodedParts[part]++;
             //    }
             //}
-            //for (int i = 0; i < encodedParts.Length; i++) 
+            //for (int i = 0; i < encodedParts.Length; i++)
             //{
             //    Console.WriteLine(i + ": " + encodedParts[i]);
             //}
@@ -74,7 +73,7 @@ namespace FYP
                         {
                             decoded[drop.parts[0]] = drop.data[0];
                             parts.Add(drop.parts[0]);
-                            Console.WriteLine("Drop " + drop.parts[0] + " has been decoded");
+                            Console.WriteLine("Part " + drop.parts[0] + " has been decoded");
                         }
                         //else we discard the drop from the goblet, we already have a solution for it
                     }
@@ -82,6 +81,7 @@ namespace FYP
                     {
                         //else we discard the drop from the goblet, we already have the solutions for all the parts that are in the drop
                         //goblet.Remove(drop);
+                        //Console.WriteLine("SUBSET");
                     }
                     else
                     {
@@ -98,10 +98,11 @@ namespace FYP
                             }
                         }
 
-                        if (dCount == drop.parts.Length - 1)
+                        if (dCount == drop.parts.Length - 1) //decoded[drop.parts[dPosition]] == 0
                         {
                             decoded[drop.parts[dPosition]] = decode(drop, decoded, dPosition); //consider parsing just the required bytes to decode the drop
-                            Console.WriteLine("Drop " + drop.parts[dPosition] + " has been decoded");
+                            parts.Add(drop.parts[dPosition]);
+                            Console.WriteLine("Part " + drop.parts[dPosition] + " has been decoded. Drop had degree: " + drop.parts.Length);
                             //goblet.Remove(drop);
                         }
 
@@ -111,6 +112,7 @@ namespace FYP
                     if (!decoded.Contains(nullValue))
                     { 
                         allSolutionsFound = true;
+                        break;
                     }
 
                 }
