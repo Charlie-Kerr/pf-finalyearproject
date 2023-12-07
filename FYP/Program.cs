@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -30,7 +31,7 @@ namespace FYP
 
         static byte decode(Drop drop, byte[] decodedParts, int partToDecode) 
         {
-            byte result = drop.data[partToDecode];
+            byte result = drop.data[0];
             for (int i = 0; i < drop.parts.Length; i++) 
             {
                 if (i != partToDecode) 
@@ -49,6 +50,7 @@ namespace FYP
             int dCount = 0;
             int dPosition = 0;
             bool allSolutionsFound = false;
+            byte nullValue = 0;
 
             while (allSolutionsFound == false)
             {
@@ -67,7 +69,7 @@ namespace FYP
                     else if (drop.parts.ToHashSet().IsSubsetOf(parts.ToHashSet())) //use hashset for comparisons
                     {
                         //else we discard the drop from the goblet, we already have the solutions for all the parts that are in the drop
-                        goblet.Remove(drop);
+                        //goblet.Remove(drop);
                     }
                     else
                     {
@@ -87,14 +89,21 @@ namespace FYP
                         if (dCount == drop.parts.Length - 1)
                         {
                             decoded[drop.parts[dPosition]] = decode(drop, decoded, dPosition); //consider parsing just the required bytes to decode the drop
-                            goblet.Remove(drop);
+                            //goblet.Remove(drop);
                         }
 
                     }
 
+                    //checks if we have decoded the data
+                    if (!decoded.Contains(nullValue))
+                    { 
+                        allSolutionsFound = true;
+                    }
+
                 }
             }
-            return null;
+            //returns the decoded data in a string format when every byte has been decoded
+            return Encoding.ASCII.GetString(decoded);
         }
 
         static List<Drop> generateDroplets(byte[] plain) 

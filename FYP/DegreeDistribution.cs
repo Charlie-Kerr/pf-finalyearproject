@@ -18,6 +18,7 @@ namespace FYP
 
     internal class ISD : DegreeDistribution 
     { 
+        //Ideal Solution Distribution
         public ISD(int k) : base(k) 
         { 
             this.degree = k; 
