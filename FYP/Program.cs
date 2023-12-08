@@ -29,7 +29,7 @@ namespace FYP
             //}
             //for (int i = 0; i < encodedParts.Length; i++)
             //{
-            //    if (encodedParts[i] == 0) 
+            //    if (encodedParts[i] == 0)
             //    {
             //        Console.WriteLine(i);
             //    }
@@ -61,7 +61,8 @@ namespace FYP
             {
                 if (i != partToDecode) 
                 {
-                    result ^= decodedParts[drop.parts[i]]; //XORs the byte to decode with all the parts that were used to encode it
+                    //XORs the byte to decode with all the parts that were used to encode it
+                    result ^= decodedParts[drop.parts[i]];
                 }
             }
             return result;
@@ -92,11 +93,9 @@ namespace FYP
                         }
                         //else we discard the drop from the goblet, we already have a solution for it
                     }
-                    else if (drop.parts.ToHashSet().IsSubsetOf(parts.ToHashSet())) //use hashset for comparisons
+                    else if (drop.parts.ToHashSet().IsSubsetOf(parts.ToHashSet()))
                     {
                         //else we discard the drop from the goblet, we already have the solutions for all the parts that are in the drop
-                        //goblet.Remove(drop);
-                        //Console.WriteLine("SUBSET");
                     }
                     else
                     {
@@ -118,7 +117,6 @@ namespace FYP
                             decoded[drop.parts[dPosition]] = decode(drop, decoded, dPosition); //consider parsing just the required bytes to decode the drop
                             parts.Add(drop.parts[dPosition]);
                             Console.WriteLine("Part " + drop.parts[dPosition] + " has been decoded. Drop had degree: " + drop.parts.Length);
-                            //goblet.Remove(drop);
                         }
                     }
 
@@ -164,7 +162,6 @@ namespace FYP
                     {
                         data[0] = plain[randPart];
                         parts[0] = randPart;
-                        //Array.IndexOf(plain, data[0]);
                     }
                     else
                     {
@@ -173,13 +170,14 @@ namespace FYP
                     }
                 }
                 drops.Add(new Drop(parts, encode(data, parts)));
+
                 //Console.WriteLine(drops.Last().ToString());
             }
             return drops;
         }
 
         static int getDegree() {
-            int[] probabilities = { 50, 30, 15, 5, 1 }; //increase chance of 2s and decrease 4s and maybe 3s
+            int[] probabilities = { 50, 30, 15, 5, 1 };
             Random rand = new Random();
 
             int degree = rand.Next(1, 101);
