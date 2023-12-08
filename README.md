@@ -1,5 +1,3 @@
 # Final Year Project
 
-This repository has been created to store your final year project.
-
-You may edit it as you like, but please do not remove the default topics or the project members list. These need to stay as currently defined in order for your supervisor to be able to find your project.
+In order to run this program you will need C# .NET 7 installed and visual studio, other than that there should be no other requirements. Simply open the project in visual studio and run it.

@@ -115,7 +115,7 @@ namespace FYP
                             }
                         }
 
-                        if (dCount == drop.parts.Length - 1) //decoded[drop.parts[dPosition]] == 0
+                        if (dCount == drop.parts.Length - 1)
                         {
                             decoded[drop.parts[dPosition]] = decode(drop, decoded, dPosition); //consider parsing just the required bytes to decode the drop
                             parts.Add(drop.parts[dPosition]);
