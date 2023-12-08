@@ -10,38 +10,41 @@ namespace FYP
         public const int degree = 5; // will be attribute of encoder class
         static void Main(string[] args)
         {
-            //string plain = "This text is a test of the encoding and decoding system.";
-
+            string plain = "This text is a test of the encoding and decoding system.";
             string longerPlain = File.ReadAllText("text.txt"); //from bin\debug\net6.0\text.txt
+
             var watch = System.Diagnostics.Stopwatch.StartNew();
             List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(longerPlain));
             watch.Stop();
             var generateTime = watch.ElapsedMilliseconds;
-            //test decode and rebuilding plaintext functions by printing decoded text to console
-
-            //int[] encodedParts = new int[Encoding.ASCII.GetByteCount(longerPlain)];
-            //foreach (Drop drop in drops)
-            //{
-            //    foreach (int part in drop.parts)
-            //    {
-            //        encodedParts[part]++;
-            //    }
-            //}
-            //for (int i = 0; i < encodedParts.Length; i++)
-            //{
-            //    if (encodedParts[i] == 0)
-            //    {
-            //        Console.WriteLine(i);
-            //    }
-
-            //    //Console.WriteLine(i + ": " + encodedParts[i]);
-            //}
+            testEncodedParts(longerPlain, drops);
 
             watch.Restart();
+            //test decode and rebuilding plaintext functions by printing decoded text to console
             Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(longerPlain)));
             watch.Stop();
             var totalDecodetime = watch.ElapsedMilliseconds;
             Console.WriteLine("Time taken to generate: " + generateTime + "\nTime taken to decode: " + totalDecodetime);
+            
+        }
+
+        static void testEncodedParts(string longerPlain, List<Drop> drops) 
+        {
+            int[] encodedParts = new int[Encoding.ASCII.GetByteCount(longerPlain)];
+            foreach (Drop drop in drops)
+            {
+                foreach (int part in drop.parts)
+                {
+                    encodedParts[part]++;
+                }
+            }
+            for (int i = 0; i < encodedParts.Length; i++)
+            {
+                if (encodedParts[i] == 0)
+                {
+                    Console.WriteLine(i);
+                }
+            }
         }
 
         static byte[] encode(byte[] data, int[] parts)
@@ -89,7 +92,7 @@ namespace FYP
                         {
                             decoded[drop.parts[0]] = drop.data[0];
                             parts.Add(drop.parts[0]);
-                            Console.WriteLine("Part " + drop.parts[0] + " has been decoded");
+                            Console.WriteLine("Part " + drop.parts[0] + " has been decoded: [" + parts.Count + "/" + byteSize + " ]");
                         }
                         //else we discard the drop from the goblet, we already have a solution for it
                     }
@@ -116,7 +119,7 @@ namespace FYP
                         {
                             decoded[drop.parts[dPosition]] = decode(drop, decoded, dPosition); //consider parsing just the required bytes to decode the drop
                             parts.Add(drop.parts[dPosition]);
-                            Console.WriteLine("Part " + drop.parts[dPosition] + " has been decoded. Drop had degree: " + drop.parts.Length);
+                            Console.WriteLine("Part " + drop.parts[dPosition] + " has been decoded: [" + parts.Count + "/" + byteSize + " ]");
                         }
                     }
 
