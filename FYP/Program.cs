@@ -10,6 +10,7 @@ namespace FYP
         public const int degree = 5; // will be attribute of encoder class
 
         public static Encoder encoder = new Encoder();
+        public static Decoder decoder = new Decoder();
         static void Main(string[] args)
         {
             string plain = "This text is a test of the encoding and decoding system.";
@@ -47,20 +48,6 @@ namespace FYP
                     Console.WriteLine(i);
                 }
             }
-        }
-
-        static byte decode(Drop drop, byte[] decodedParts, int partToDecode) 
-        {
-            byte result = drop.data[0];
-            for (int i = 0; i < drop.parts.Length; i++) 
-            {
-                if (i != partToDecode) 
-                {
-                    //XORs the byte to decode with all the parts that were used to encode it
-                    result ^= decodedParts[drop.parts[i]];
-                }
-            }
-            return result;
         }
 
         static string rebuildPlaintext(List<Drop> goblet, int byteSize) 
@@ -109,7 +96,7 @@ namespace FYP
 
                         if (dCount == drop.parts.Length - 1)
                         {
-                            decoded[drop.parts[dPosition]] = decode(drop, decoded, dPosition); //consider parsing just the required bytes to decode the drop
+                            decoded[drop.parts[dPosition]] = decoder.decode(drop, decoded, dPosition); //consider parsing just the required bytes to decode the drop
                             parts.Add(drop.parts[dPosition]);
                             Console.WriteLine("Part " + drop.parts[dPosition] + " has been decoded: [" + parts.Count + "/" + byteSize + " ]");
                         }
