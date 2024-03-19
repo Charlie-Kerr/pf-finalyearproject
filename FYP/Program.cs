@@ -13,7 +13,6 @@ namespace FYP
         public static Decoder decoder = new Decoder();
         static void Main(string[] args)
         {
-            string plain = "This text is a test of the encoding and decoding system.";
             string longerPlain = File.ReadAllText("text.txt"); //from bin\debug\net6.0\text.txt
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -81,7 +80,7 @@ namespace FYP
                     }
                     else
                     {
-                        //multi-part drops
+                        //for drops degree > 1
                         for (int i = 0; i < drop.parts.Length; i++)
                         {
                             if (parts.Contains(drop.parts[i]))
@@ -153,7 +152,6 @@ namespace FYP
                 }
                 drops.Add(new Drop(parts, encoder.encode(data, parts)));
 
-                //Console.WriteLine(drops.Last().ToString());
             }
             return drops;
         }
