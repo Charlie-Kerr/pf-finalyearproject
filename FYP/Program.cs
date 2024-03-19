@@ -8,6 +8,8 @@ namespace FYP
     internal class Program
     {
         public const int degree = 5; // will be attribute of encoder class
+
+        public static Encoder encoder = new Encoder();
         static void Main(string[] args)
         {
             string plain = "This text is a test of the encoding and decoding system.";
@@ -45,16 +47,6 @@ namespace FYP
                     Console.WriteLine(i);
                 }
             }
-        }
-
-        static byte[] encode(byte[] data, int[] parts)
-        {
-            byte result = data[0];
-            for (int i = 1; i < parts.Count(); i++)
-            {
-                result ^= data[i];
-            }
-            return new byte[] { result };
         }
 
         static byte decode(Drop drop, byte[] decodedParts, int partToDecode) 
@@ -172,7 +164,7 @@ namespace FYP
                         parts[j] = randPart;
                     }
                 }
-                drops.Add(new Drop(parts, encode(data, parts)));
+                drops.Add(new Drop(parts, encoder.encode(data, parts)));
 
                 //Console.WriteLine(drops.Last().ToString());
             }
