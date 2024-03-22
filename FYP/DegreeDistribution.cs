@@ -9,25 +9,22 @@ namespace FYP
 {
     internal class DegreeDistribution
     {
-        protected int degree;
         protected int N; //size of data
-        public DegreeDistribution(int k, int N) {
-            this.degree = k;
+        public DegreeDistribution(int N) {
             this.N = N;
         }
     }
 
     internal class ISD : DegreeDistribution 
     {
-        public double[] weights;
         //Ideal Soliton Distribution
-        public ISD(int k, int N) : base(k, N) 
+        public double[] weights;
+        public ISD(int N) : base(N) 
         { 
-            this.degree = k;
             this.weights = new double[N];
         }
 
-        public void generateWeights()
+        public void generateWeights() //culmulative distribution function
         {
             weights[0] = 1.0 / N;
 
@@ -38,7 +35,7 @@ namespace FYP
             }
         }
 
-        private double pdf(double x) 
+        private double pdf(double x) //probability density function
         {
             return 1.0 / (x * (x - 1));
         }
