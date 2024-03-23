@@ -9,7 +9,7 @@ namespace FYP
 {
     public class DegreeDistribution
     {
-        protected int N; //size of data
+        protected int N; //size of data (consider changing to const?)
         public DegreeDistribution(int N) {
             this.N = N;
         }
@@ -39,9 +39,10 @@ namespace FYP
             this.N = N;
             this.random = new Random(seed);
             this.weights = new double[N];
+            generateWeights();
         }
 
-        public int getDegreeOfWeight(int i) //position 0 is probability of degree 1
+        public int getDegreeOfWeight(int i) //position 0 is probability of degree 1, position i is probability of degree i+1
         { 
             if (i < 0 || i >= N)
             {
@@ -55,20 +56,21 @@ namespace FYP
             double p = random.NextDouble(); //uniform probability
             if (p <= weights[0]) return 1;
             else return binarySearch(p);
-
         }
 
-        private int binarySearch(double p)
+        private int binarySearch(double p) //Searches using index, returns degree
         {
-            int low = 2;
-            int high = N;
+            int low = 0;
+            int high = N - 1;
+
+            if (p <= weights[0]) return 1;
 
             while (low <= high)
             {
                 int mid = (low + high) / 2;
                 
-                if (weights[mid] < p && p <= weights[mid + 1]) return mid;
-                else if (p <= weights[mid]) low = mid + 1;
+                if (weights[mid-1] < p && p <= weights[mid]) return mid + 1; //returns degree
+                else if (p >= weights[mid]) low = mid + 1;
                 else high = mid - 1;
             }
             return -1;
@@ -78,9 +80,9 @@ namespace FYP
         {
             weights[0] = 1.0 / N;
 
-            for (int i = 2; i < N; i++)
+            for (int i = 1; i < N; i++)
             {
-                weights[i - 1] = weights[i - 2] + pdf(i);
+                weights[i] = weights[i - 1] + pdf(i+1);//have a look at this
                 //Console.WriteLine(weights[i - 1]);
             }
         }
