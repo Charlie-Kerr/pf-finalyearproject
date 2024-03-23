@@ -41,6 +41,30 @@ namespace FYP
             this.weights = new double[N];
         }
 
+        public int next() 
+        {
+            double p = random.NextDouble(); //uniform probability
+            if (p <= weights[0]) return 1;
+            else return binarySearch(p);
+
+        }
+
+        private int binarySearch(double p)
+        {
+            int low = 2;
+            int high = N;
+
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+                
+                if (weights[mid] < p && p <= weights[mid + 1]) return mid;
+                else if (p <= weights[mid]) low = mid + 1;
+                else high = mid - 1;
+            }
+            return -1;
+        }
+
         public void generateWeights() //culmulative distribution function
         {
             weights[0] = 1.0 / N;
