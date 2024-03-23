@@ -8,8 +8,9 @@ namespace FYPTests
         [TestMethod]
         public void TestMethod1()
         {
-            DegreeDistribution isd = new ISD(100, 1000000001);
-            //Assert.AreEqual();
+            ISD isd = new ISD(100, 1000000001);
+
+            Assert.AreEqual(1, isd.next());
         }
     }
 }

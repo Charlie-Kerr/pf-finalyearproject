@@ -18,7 +18,7 @@ namespace FYP
     public class ISD : DegreeDistribution 
     {
         //Ideal Soliton Distribution
-        public double[] weights;
+        private double[] weights;
         private Random random;
         public ISD(int N) : base(N) 
         {
@@ -39,6 +39,15 @@ namespace FYP
             this.N = N;
             this.random = new Random(seed);
             this.weights = new double[N];
+        }
+
+        public int getDegreeOfWeight(int i) //position 0 is probability of degree 1
+        { 
+            if (i < 0 || i >= N)
+            {
+                throw new Exception("Index out of bounds");
+            }
+            return binarySearch(weights[i]);
         }
 
         public int next() 
