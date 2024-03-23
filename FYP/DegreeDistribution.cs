@@ -68,7 +68,7 @@ namespace FYP
             while (low <= high)
             {
                 int mid = (low + high) / 2;
-                
+                if (mid == 0) return mid + 2;
                 if (weights[mid-1] < p && p <= weights[mid]) return mid + 1; //returns degree
                 else if (p >= weights[mid]) low = mid + 1;
                 else high = mid - 1;
