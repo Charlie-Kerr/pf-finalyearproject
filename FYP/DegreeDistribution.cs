@@ -7,7 +7,7 @@ using System.Transactions;
 
 namespace FYP
 {
-    internal class DegreeDistribution
+    public class DegreeDistribution
     {
         protected int N; //size of data
         public DegreeDistribution(int N) {
@@ -15,7 +15,7 @@ namespace FYP
         }
     }
 
-    internal class ISD : DegreeDistribution 
+    public class ISD : DegreeDistribution 
     {
         //Ideal Soliton Distribution
         public double[] weights;
