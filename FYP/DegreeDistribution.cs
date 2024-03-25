@@ -42,8 +42,9 @@ namespace FYP
             generateWeights();
         }
 
-        public int getDegreeOfWeight(int i) //position 0 is probability of degree 1, position i is probability of degree i+1
+        public int getDegreeOfWeight(int i) //position i is probability of degree i+1
         { 
+            //primarly used for testing
             if (i < 0 || i >= N)
             {
                 throw new Exception("Index out of bounds");
@@ -82,7 +83,7 @@ namespace FYP
 
             for (int i = 1; i < N; i++)
             {
-                weights[i] = weights[i - 1] + pdf(i+1);//have a look at this
+                weights[i] = weights[i - 1] + pdf(i+1);
                 //Console.WriteLine(weights[i - 1]);
             }
         }
