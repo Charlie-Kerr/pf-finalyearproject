@@ -114,6 +114,11 @@ namespace FYP
             return Encoding.ASCII.GetString(decoded);
         }
 
+        static List<Drop> ISDGenerateDroplets(string plain)
+        {
+            return null;
+        }
+
         static List<Drop> generateDroplets(byte[] plain) 
         {
             Random rand = new Random();
