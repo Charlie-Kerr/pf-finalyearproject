@@ -131,13 +131,13 @@ namespace FYP
                 data = new byte[degree];
                 for (int j = 0; j < degree; j++)
                 {
-                    
+                    randomPart = isd.next();
+                    data[j] = plain[randomPart];
+                    parts[j] = randomPart;
                 }
-
+                drops.Add(new Drop(parts, encoder.encode(data, parts)));
             }
-
-
-            return null;
+            return drops;
         }
 
         static List<Drop> generateDroplets(byte[] plain) 
