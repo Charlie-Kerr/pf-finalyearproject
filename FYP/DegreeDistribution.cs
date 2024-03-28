@@ -77,7 +77,7 @@ namespace FYP
             return -1;
         }
 
-        public void generateWeights() //culmulative distribution function
+        private void generateWeights() //culmulative distribution function
         {
             weights[0] = 1.0 / N;
 

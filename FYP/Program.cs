@@ -11,9 +11,11 @@ namespace FYP
 
         public static Encoder encoder = new Encoder();
         public static Decoder decoder = new Decoder();
+        public static ISD isd;
         static void Main(string[] args)
         {
             string longerPlain = File.ReadAllText("text.txt"); //from bin\debug\net6.0\text.txt
+            isd = new ISD(longerPlain.Length);//intiate ISD with size of data
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
             List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(longerPlain));
@@ -114,8 +116,27 @@ namespace FYP
             return Encoding.ASCII.GetString(decoded);
         }
 
-        static List<Drop> ISDGenerateDroplets(string plain)
+        static List<Drop> ISDGenerateDroplets(byte[] plain, int size)
         {
+            int randomPart = 0;
+            int degree = 0;
+            byte[] data;
+            int[] parts;
+            List<Drop> drops = new List<Drop>();
+
+            for (int i = 0; i < size; i++)
+            {
+                degree = isd.next();
+                parts = new int[degree];
+                data = new byte[degree];
+                for (int j = 0; j < degree; j++)
+                {
+                    
+                }
+
+            }
+
+
             return null;
         }
 
