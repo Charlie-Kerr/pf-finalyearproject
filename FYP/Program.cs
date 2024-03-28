@@ -18,10 +18,11 @@ namespace FYP
             isd = new ISD(longerPlain.Length);//intiate ISD with size of data
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(longerPlain));
+            //List<Drop> drops = generateDroplets(Encoding.ASCII.GetBytes(longerPlain));
+            List<Drop> drops = ISDGenerateDroplets(Encoding.ASCII.GetBytes(longerPlain), longerPlain.Length);
             watch.Stop();
             var generateTime = watch.ElapsedMilliseconds;
-            testEncodedParts(longerPlain, drops);
+            //testEncodedParts(longerPlain, drops);
 
             watch.Restart();
             //test decode and rebuilding plaintext functions by printing decoded text to console
@@ -51,6 +52,51 @@ namespace FYP
             }
         }
 
+        static string ISDRebuildPlaintext(List<Drop> goblet, int byteSize) 
+        {
+            List<Drop> decodeBucket = new List<Drop>();
+            byte[] decoded = new byte[byteSize];
+            List<int> parts = new List<int>();
+            int dCount = 0;
+            int dPosition = 0;
+            bool allSolutionsFound = false;
+            byte nullValue = 0;
+
+            while (allSolutionsFound == false)
+            {
+                foreach (Drop drop in goblet)
+                {
+                    dCount = 0;
+                    if (drop.parts.Length == 1) //consider using more efficient search to find drops of degree 1
+                    {
+                        if (decoded[drop.parts[0]] == 0)
+                        {
+                            decoded[drop.parts[0]] = drop.data[0];
+                            parts.Add(drop.parts[0]);
+                            Console.WriteLine("Part " + drop.parts[0] + " has been decoded: [" + parts.Count + "/" + byteSize + " ]");
+
+                            //decrease the degree of all the drops by 1 that contain the part that has been decoded
+                            foreach (Drop d in goblet) //consider recursive function to decrease degree
+                            {
+                                if (d.parts.Contains(drop.parts[0]))
+                                {
+                                    
+                                }
+                            }   
+                        }
+                        //else we discard the drop from the goblet, we already have a solution for it
+                    }
+
+                    //checks if we have decoded the data
+                    if (!decoded.Contains(nullValue))
+                    {
+                        allSolutionsFound = true;
+                        break;
+                    }
+                }
+            }
+            return null;
+        }
         static string rebuildPlaintext(List<Drop> goblet, int byteSize) 
         {
             List<Drop> decodeBucket = new List<Drop>();
