@@ -23,5 +23,45 @@ namespace FYPTests
 
             Assert.IsTrue(isd.next() >= 1 && isd.next() <= 100);
         }
+
+        [TestMethod]
+        public void TestISDGenerateDroplets()
+        {
+            ISD isd = new ISD(5000, 100);
+            byte[] data = new byte[5000];
+            List<Drop> drops = ISDGenerateDroplets(data, 5000);
+
+            foreach (Drop drop in drops)
+            {
+                Assert.IsTrue(drop.parts.Length >= 1 && drop.parts.Length <= 5000);
+            }
+        }
+
+        static List<Drop> ISDGenerateDroplets(byte[] plain, int size)
+        {
+            Random rand = new Random();
+            ISD isd = new ISD(size);
+            Encoder encoder = new Encoder();
+            int randomPart = 0;
+            int degree = 0;
+            byte[] data;
+            int[] parts;
+            List<Drop> drops = new List<Drop>();
+
+            for (int i = 0; i < size * 1.10; i++) //Creates K*1.10 drops, consider changing to variable
+            {
+                degree = isd.next();
+                parts = new int[degree];
+                data = new byte[degree];
+                for (int j = 0; j < degree; j++)
+                {
+                    randomPart = rand.Next(0, size);
+                    data[j] = plain[randomPart];
+                    parts[j] = randomPart;
+                }
+                drops.Add(new Drop(parts, encoder.encode(data, parts)));
+            }
+            return drops;
+        }
     }
 }

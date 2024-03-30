@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FYP
 {
-    internal class Encoder
+    public class Encoder
     {
         public Encoder()
         {

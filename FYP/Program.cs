@@ -55,7 +55,6 @@ namespace FYP
 
         static string ISDRebuildPlaintext(List<Drop> goblet, int byteSize) 
         {
-            List<Drop> decodeBucket = new List<Drop>();
             byte[] decoded = new byte[byteSize];
             List<int> parts = new List<int>();
             bool allSolutionsFound = false;
@@ -67,7 +66,7 @@ namespace FYP
                 {
                     if (drop.parts.Length == 1) //consider using more efficient search to find drops of degree 1
                     {
-                        if (decoded[drop.parts[0]] == 0)
+                        if (!parts.Contains(drop.parts[0]))
                         {
                             decoded[drop.parts[0]] = drop.data[0];
                             parts.Add(drop.parts[0]);
@@ -76,7 +75,7 @@ namespace FYP
                             //decrease the degree of all the drops by 1 that contain the part that has been decoded
                             foreach (Drop d in goblet) //consider recursive function to decrease degree
                             {
-                                if (d.parts.Contains(drop.parts[0]))
+                                if (d.parts.Contains(drop.parts[0]) && d.parts.Length > 1)
                                 {
                                     decoder.reduceDegree(d, drop.data[0], drop.parts[0]);
                                 }
@@ -86,7 +85,7 @@ namespace FYP
                     }
 
                     //checks if we have decoded the data
-                    if (!decoded.Contains(nullValue))
+                    if (parts.Count() == byteSize)//need to check validity of data here, not matching original message
                     {
                         allSolutionsFound = true;
                         break;
@@ -163,6 +162,7 @@ namespace FYP
 
         static List<Drop> ISDGenerateDroplets(byte[] plain, int size)
         {
+            Random rand = new Random();
             int randomPart = 0;
             int degree = 0;
             byte[] data;
@@ -171,12 +171,12 @@ namespace FYP
 
             for (int i = 0; i < size * 1.10; i++) //Creates K*1.10 drops, consider changing to variable
             {
-                degree = isd.next();
+                degree = isd.next(); 
                 parts = new int[degree];
                 data = new byte[degree];
                 for (int j = 0; j < degree; j++)
                 {
-                    randomPart = isd.next();
+                    randomPart = rand.Next(0, size);
                     data[j] = plain[randomPart];
                     parts[j] = randomPart;
                 }
