@@ -11,7 +11,7 @@ namespace FYP
 
         public static Encoder encoder = new Encoder();
         public static Decoder decoder = new Decoder();
-        public static ISD isd;
+        public static ISD isd; //consider making this an attribute of the encoder class?
         static void Main(string[] args)
         {
             string longerPlain = File.ReadAllText("text.txt"); //from bin\debug\net6.0\text.txt
@@ -26,7 +26,8 @@ namespace FYP
 
             watch.Restart();
             //test decode and rebuilding plaintext functions by printing decoded text to console
-            Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(longerPlain)));
+            //Console.WriteLine(rebuildPlaintext(drops, Encoding.ASCII.GetByteCount(longerPlain)));
+            Console.WriteLine(ISDRebuildPlaintext(drops, Encoding.ASCII.GetByteCount(longerPlain)));
             watch.Stop();
             var totalDecodetime = watch.ElapsedMilliseconds;
             Console.WriteLine("Time taken to generate: " + generateTime + "\nTime taken to decode: " + totalDecodetime);
@@ -57,8 +58,6 @@ namespace FYP
             List<Drop> decodeBucket = new List<Drop>();
             byte[] decoded = new byte[byteSize];
             List<int> parts = new List<int>();
-            int dCount = 0;
-            int dPosition = 0;
             bool allSolutionsFound = false;
             byte nullValue = 0;
 
@@ -66,7 +65,6 @@ namespace FYP
             {
                 foreach (Drop drop in goblet)
                 {
-                    dCount = 0;
                     if (drop.parts.Length == 1) //consider using more efficient search to find drops of degree 1
                     {
                         if (decoded[drop.parts[0]] == 0)
@@ -80,7 +78,7 @@ namespace FYP
                             {
                                 if (d.parts.Contains(drop.parts[0]))
                                 {
-                                    
+                                    decoder.reduceDegree(d, drop.data[0], drop.parts[0]);
                                 }
                             }   
                         }
@@ -95,7 +93,8 @@ namespace FYP
                     }
                 }
             }
-            return null;
+            //returns the decoded data in a string format when every byte has been decoded
+            return Encoding.ASCII.GetString(decoded);
         }
         static string rebuildPlaintext(List<Drop> goblet, int byteSize) 
         {
@@ -170,7 +169,7 @@ namespace FYP
             int[] parts;
             List<Drop> drops = new List<Drop>();
 
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < size * 1.10; i++) //Creates K*1.10 drops, consider changing to variable
             {
                 degree = isd.next();
                 parts = new int[degree];

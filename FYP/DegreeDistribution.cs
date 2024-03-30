@@ -52,7 +52,7 @@ namespace FYP
             return binarySearch(weights[i]);
         }
 
-        public int next() 
+        public int next() //can return zero rn!
         {
             double p = random.NextDouble(); //uniform probability
             if (p <= weights[0]) return 1;

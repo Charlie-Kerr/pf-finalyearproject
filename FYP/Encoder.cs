@@ -12,7 +12,7 @@ namespace FYP
         {
 
         }
-        public byte[] encode(byte[] data, int[] parts)
+        public byte[] encode(byte[] data, int[] parts) //check drops that are being encoded are not the same as drops already encoded
         {
             byte result = data[0];
             for (int i = 1; i < parts.Count(); i++)
