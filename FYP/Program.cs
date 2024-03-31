@@ -66,7 +66,7 @@ namespace FYP
                 {
                     if (drop.parts.Length == 1) //consider using more efficient search to find drops of degree 1
                     {
-                        if (!parts.Contains(drop.parts[0]))
+                        if (decoded[drop.parts[0]] == 0) //more efficient that .Contains, goes straight to the index
                         {
                             decoded[drop.parts[0]] = drop.data[0];
                             parts.Add(drop.parts[0]);
@@ -85,7 +85,7 @@ namespace FYP
                     }
 
                     //checks if we have decoded the data
-                    if (parts.Count() == byteSize)//need to check validity of data here, not matching original message
+                    if (!decoded.Contains(nullValue))//need to check validity of data here, not matching original message
                     {
                         allSolutionsFound = true;
                         break;
@@ -168,15 +168,22 @@ namespace FYP
             byte[] data;
             int[] parts;
             List<Drop> drops = new List<Drop>();
+            HashSet<int> partsInDrop = new HashSet<int>();
 
-            for (int i = 0; i < size * 1.10; i++) //Creates K*1.10 drops, consider changing to variable
+            for (int i = 0; i < size * 2; i++) //Creates K*1.10 drops, consider changing to variable
             {
-                degree = isd.next(); 
+                partsInDrop.Clear();
+                degree = isd.next();
                 parts = new int[degree];
                 data = new byte[degree];
+
                 for (int j = 0; j < degree; j++)
                 {
-                    randomPart = rand.Next(0, size);
+                    while (partsInDrop.Count < j + 1) //ensures that a part is not used twice in the same drop
+                    {
+                        randomPart = rand.Next(0, size);
+                        partsInDrop.Add(randomPart);
+                    }
                     data[j] = plain[randomPart];
                     parts[j] = randomPart;
                 }

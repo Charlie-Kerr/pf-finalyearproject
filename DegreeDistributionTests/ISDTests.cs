@@ -1,4 +1,5 @@
 using FYP;
+using System;
 
 namespace FYPTests
 {
@@ -34,6 +35,18 @@ namespace FYPTests
             foreach (Drop drop in drops)
             {
                 Assert.IsTrue(drop.parts.Length >= 1 && drop.parts.Length <= 5000);
+                if (drop.parts.ToHashSet().Count() != drop.parts.Length) 
+                {
+                    Console.WriteLine("Set: " + drop.parts.ToHashSet().Count() + " original length: " + drop.parts.Length);
+                    List<int> distinctNumbers = drop.parts.Distinct().ToList();
+                    List<int> repeatedNumbers = drop.parts.ToList();
+                    foreach (int number in distinctNumbers)
+                    {
+                        repeatedNumbers.Remove(number);
+                    }
+                    Console.WriteLine(repeatedNumbers[0]);
+                    Assert.IsTrue(drop.parts.ToHashSet().Count() == drop.parts.Length);
+                }
             }
         }
 
@@ -47,18 +60,26 @@ namespace FYPTests
             byte[] data;
             int[] parts;
             List<Drop> drops = new List<Drop>();
+            HashSet<int> partsInDrop = new HashSet<int>();
 
-            for (int i = 0; i < size * 1.10; i++) //Creates K*1.10 drops, consider changing to variable
+            for (int i = 0; i < size * 1.10; i++) //Creates K*1.10 drops, consider changing to variable - potentially externalise loop
             {
+                partsInDrop.Clear();
                 degree = isd.next();
                 parts = new int[degree];
                 data = new byte[degree];
+
                 for (int j = 0; j < degree; j++)
                 {
-                    randomPart = rand.Next(0, size);
+                    while (partsInDrop.Count < j+1) //ensures that a part is not used twice in the same drop
+                    {
+                        randomPart = rand.Next(0, size);
+                        partsInDrop.Add(randomPart);
+                    }
                     data[j] = plain[randomPart];
                     parts[j] = randomPart;
                 }
+
                 drops.Add(new Drop(parts, encoder.encode(data, parts)));
             }
             return drops;
