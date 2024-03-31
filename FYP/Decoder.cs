@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FYP
 {
-    internal class Decoder
+    public class Decoder
     {
         public Decoder()
         {

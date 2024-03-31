@@ -1,5 +1,6 @@
 using FYP;
 using System;
+using System.Text;
 
 namespace FYPTests
 {
@@ -80,8 +81,47 @@ namespace FYPTests
         }
 
         [TestMethod]
+        public void TestDictionaryHashSet() 
+        {
+            string testString = "He";
+            byte testByte = Encoding.ASCII.GetBytes(testString)[0];
+            FYP.Decoder decoder = new FYP.Decoder();
+            List<Drop> drops = ISDGenerateDroplets(Encoding.ASCII.GetBytes(testString), testString.Length);
+            Dictionary<int, List<Drop>> dictionary = new Dictionary<int, List<Drop>>();
+
+            foreach (Drop drop in drops)
+            {
+                for (int i = 0; i < drop.parts.Length; i++)
+                {
+                    if (dictionary.ContainsKey(drop.parts[i]))
+                    {
+                        dictionary[drop.parts[i]].Add(drop);
+                    }
+                    else
+                    {
+                        dictionary[drop.parts[i]] = new List<Drop>();
+                        dictionary[drop.parts[i]].Add(drop);
+                    }
+                }
+            }
+            for (int i = 0; i < dictionary[0].Count(); i++)
+            {
+                decoder.reduceDegree(dictionary[0][i], testByte, 0);
+            }
+            foreach (KeyValuePair<int, List<Drop>> pair in dictionary)
+            {
+                Console.WriteLine(pair.Key);
+                foreach (Drop drop in pair.Value)
+                {
+                    Console.WriteLine(drop.ToString());
+                }
+            }
+        }
+
+        [TestMethod]
         public void TestHashSet()
         {
+            //use CreateSetComparer to compare the values of the sets instead of the default which compares the objects of the sets themseleves
             HashSet<HashSet<int>> hashSet = new HashSet<HashSet<int>>(HashSet<int>.CreateSetComparer());
             int[] array1 = new int[] { 1, 2, 3, 4, 5 };
             int[] array2 = new int[] { 5, 2, 3, 4, 1 };
@@ -96,7 +136,7 @@ namespace FYPTests
         {
             Random rand = new Random();
             ISD isd = new ISD(size);
-            Encoder encoder = new Encoder();
+            FYP.Encoder encoder = new FYP.Encoder();
             int randomPart = 0;
             int degree = 0;
             byte[] data;
