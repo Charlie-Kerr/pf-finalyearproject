@@ -79,6 +79,19 @@ namespace FYPTests
             Assert.IsTrue(dictionary[array1.Sum()].Count == 1);
         }
 
+        [TestMethod]
+        public void TestHashSet()
+        {
+            HashSet<HashSet<int>> hashSet = new HashSet<HashSet<int>>(HashSet<int>.CreateSetComparer());
+            int[] array1 = new int[] { 1, 2, 3, 4, 5 };
+            int[] array2 = new int[] { 5, 2, 3, 4, 1 };
+
+            hashSet.Add(array1.ToHashSet());
+            hashSet.Add(array2.ToHashSet());
+
+            Assert.IsTrue(hashSet.Count == 1);
+        }
+
         static List<Drop> ISDGenerateDroplets(byte[] plain, int size)
         {
             Random rand = new Random();
