@@ -50,6 +50,35 @@ namespace FYPTests
             }
         }
 
+        [TestMethod]
+        public void TestDictionary() 
+        { 
+            Dictionary<int, List<int[]>> dictionary = new Dictionary<int, List<int[]>>();
+            int[] array1 = {1,2,3,4,5};
+            int[] array2 = {5,2,3,4,1};
+
+            dictionary[array1.Sum()] = new List<int[]>();
+            dictionary[array1.Sum()].Add(array1);
+
+            if (dictionary.ContainsKey(array2.Sum()))
+            {
+                foreach (int[] dropletParts in dictionary[array2.Sum()])
+                {
+                    if (array2.Length == dropletParts.Length && !array2.ToHashSet().IsSubsetOf(dropletParts))
+                    {
+                        dictionary[array2.Sum()].Add(array2);
+                    }
+                }
+            }
+            else
+            {
+                dictionary[array2.Sum()] = new List<int[]>();
+                dictionary[array2.Sum()].Add(array2);
+            }
+
+            Assert.IsTrue(dictionary[array1.Sum()].Count == 1);
+        }
+
         static List<Drop> ISDGenerateDroplets(byte[] plain, int size)
         {
             Random rand = new Random();
@@ -84,5 +113,6 @@ namespace FYPTests
             }
             return drops;
         }
+
     }
 }
