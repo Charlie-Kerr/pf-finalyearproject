@@ -7,12 +7,18 @@ using System.Transactions;
 
 namespace FYP
 {
-    public class DegreeDistribution
+    public enum SolitonDistributionType
+    {
+        ISD, RSD
+    }
+    public abstract class DegreeDistribution
     {
         protected int N; //size of data (consider changing to const?)
         public DegreeDistribution(int N) {
             this.N = N;
         }
+
+        public abstract int next();
     }
 
     public class ISD : DegreeDistribution 
@@ -52,7 +58,7 @@ namespace FYP
             return binarySearch(weights[i]);
         }
 
-        public int next()
+        public override int next()
         {
             double p = random.NextDouble(); //uniform probability
             if (p <= weights[0]) return 1;

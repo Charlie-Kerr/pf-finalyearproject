@@ -85,7 +85,6 @@ namespace FYPTests
         {
             string testString = "He";
             byte testByte = Encoding.ASCII.GetBytes(testString)[0];
-            FYP.Decoder decoder = new FYP.Decoder();
             List<Drop> drops = ISDGenerateDroplets(Encoding.ASCII.GetBytes(testString), testString.Length);
             Dictionary<int, List<Drop>> dictionary = new Dictionary<int, List<Drop>>();
 
@@ -106,7 +105,7 @@ namespace FYPTests
             }
             for (int i = 0; i < dictionary[0].Count(); i++)
             {
-                decoder.reduceDegree(dictionary[0][i], testByte, 0);
+                FYP.Decoder.reduceDegree(dictionary[0][i], testByte, 0);
             }
             foreach (KeyValuePair<int, List<Drop>> pair in dictionary)
             {
@@ -136,7 +135,6 @@ namespace FYPTests
         {
             Random rand = new Random();
             ISD isd = new ISD(size);
-            FYP.Encoder encoder = new FYP.Encoder();
             int randomPart = 0;
             int degree = 0;
             byte[] data;
@@ -162,7 +160,7 @@ namespace FYPTests
                     parts[j] = randomPart;
                 }
 
-                drops.Add(new Drop(parts, encoder.encode(data, parts)));
+                drops.Add(new Drop(parts, FYP.Encoder.encode(data, parts)));
             }
             return drops;
         }
