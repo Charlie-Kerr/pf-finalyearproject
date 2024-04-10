@@ -14,7 +14,7 @@ namespace FYP
         {
             this.byteSize = byteSize;
         }
-        public string ISDRebuildPlaintext(List<Drop> goblet)
+        public string RebuildPlaintext(List<Drop> goblet)
         {
             byte[] decoded = new byte[byteSize];
             List<int> parts = new List<int>();

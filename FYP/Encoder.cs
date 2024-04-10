@@ -24,7 +24,7 @@ namespace FYP
             }
             Soliton = new ISD(plaintext.Length);
         }
-        public List<Drop> ISDGenerateDroplets()
+        public List<Drop> GenerateDroplets()
         {
             Random rand = new Random();
             int randomPart = 0;
