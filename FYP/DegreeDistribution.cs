@@ -52,7 +52,7 @@ namespace FYP
             return binarySearch(weights[i]);
         }
 
-        public int next() 
+        public int next()
         {
             double p = random.NextDouble(); //uniform probability
             if (p <= weights[0]) return 1;
@@ -77,7 +77,7 @@ namespace FYP
             return -1;
         }
 
-        public void generateWeights() //culmulative distribution function
+        private void generateWeights() //culmulative distribution function
         {
             weights[0] = 1.0 / N;
 

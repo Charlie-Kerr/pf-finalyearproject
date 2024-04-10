@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FYP
 {
-    internal class Drop
+    public class Drop
     {
         public int[] parts;
         public byte[] data;
