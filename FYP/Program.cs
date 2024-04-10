@@ -15,10 +15,10 @@ namespace FYP
             watch.Stop();
             var generateTime = watch.ElapsedMilliseconds;
 
-            Decoder decoder = new Decoder(encoder.getByteSize());
+            Decoder decoder = new Decoder(encoder.getByteSize(), drops);
             watch.Restart();
             //test decode and rebuilding plaintext functions by printing decoded text to console
-            Console.WriteLine(decoder.RebuildPlaintext(drops, encoder));
+            Console.WriteLine(decoder.RebuildPlaintext(encoder, drops));
             watch.Stop();
             var totalDecodetime = watch.ElapsedMilliseconds;
             Console.WriteLine("Time taken to generate: " + generateTime + "\nTime taken to decode: " + totalDecodetime);

@@ -98,8 +98,5 @@ namespace FYP
         {
             return 1.0 / (x * (x - 1));
         }
-
-        
-
     }
 }
