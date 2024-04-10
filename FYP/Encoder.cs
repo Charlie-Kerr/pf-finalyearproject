@@ -24,7 +24,7 @@ namespace FYP
             }
             Soliton = new ISD(plaintext.Length);
         }
-        public List<Drop> GenerateDroplets()
+        public List<Drop> GenerateDroplets(int iterations) //blockSize * 2
         {
             Random rand = new Random();
             int randomPart = 0;
@@ -34,7 +34,7 @@ namespace FYP
             List<Drop> drops = new List<Drop>();
             HashSet<int> partsInDrop = new HashSet<int>();
 
-            for (int i = 0; i < blockSize * 2; i++) //Creates K*1.10 drops, consider changing to variable
+            for (int i = 0; i < iterations; i++) //Creates K*1.10 drops, consider changing to variable
             {
                 partsInDrop.Clear();
                 degree = Soliton.next();

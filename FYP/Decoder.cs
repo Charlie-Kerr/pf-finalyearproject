@@ -14,7 +14,7 @@ namespace FYP
         {
             this.byteSize = byteSize;
         }
-        public string RebuildPlaintext(List<Drop> goblet)
+        public string RebuildPlaintext(List<Drop> goblet, Encoder encoder)
         {
             byte[] decoded = new byte[byteSize];
             List<int> parts = new List<int>();
@@ -75,6 +75,11 @@ namespace FYP
             //Creates a new parts array without the part that is being reduced, and XORs the data with the part being reduced
             drop.parts = drop.parts.Where(val => val != partToReduce).ToArray();
             drop.data[0] = drop.data[0] ^= decodedPart;
+        }
+
+        static Drop requestDrop(Encoder encoder) 
+        { 
+            return encoder.GenerateDroplets(1)[0];
         }
     }
 }
