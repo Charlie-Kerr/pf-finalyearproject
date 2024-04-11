@@ -68,23 +68,24 @@ namespace FYP
         {
             int low = 0;
             int high = N - 1;
+            int mid = 0;
 
             if (u <= normalisedRSDWeights[0]) return 1;
 
             while (low <= high)
             {
-                int mid = (low + high) / 2;
+                mid = (int)Math.Ceiling((low + high) / 2.0);
                 if (mid == 0) return mid + 2;
                 if (normalisedRSDWeights[mid - 1] < u && u <= normalisedRSDWeights[mid]) return mid + 1; //returns degree
                 else if (u >= normalisedRSDWeights[mid]) low = mid + 1;
                 else high = mid - 1;
             }
-            return -1;
+            return mid + 1;
         }
 
         private double calculateR()
         {
-            return Math.Ceiling(c * Math.Log(N / delta) * Math.Sqrt(N));
+            return c * Math.Log(N / delta) * Math.Sqrt(N);
         }
         private int calculateSpike()
         {
@@ -100,13 +101,8 @@ namespace FYP
         }
 
         private double calculateBeta()
-        {
-            double sum = 0;
-            for (int i = 1; i <= N; i++)
-            {
-                sum += isdWeights[i] + rsdWeights[i];
-            }
-            return sum;
+        {   
+            return isdWeights[isdWeights.Length - 1] + rsdWeights[rsdWeights.Length - 1];
         }
         private void generateISDWeights() //culmulative distribution function
         {
@@ -126,7 +122,7 @@ namespace FYP
             {
                 if (1 <= i && i <= spike - 1)
                 {
-                    rsdWeights[i] = rsdWeights[i - 1] + (1.0 / (i * spike));
+                    rsdWeights[i] = rsdWeights[i - 1] + (1.0 / (i * spike)); //does this need to be +1?
                 }
                 else if (i == spike)
                 {
@@ -134,7 +130,7 @@ namespace FYP
                 }
                 else 
                 {
-                    rsdWeights[i] = 0;
+                    rsdWeights[i] = rsdWeights[i - 1] + 0;
                 }
             }
         }

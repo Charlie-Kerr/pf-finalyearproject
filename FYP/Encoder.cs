@@ -9,7 +9,7 @@ namespace FYP
 {
     public class Encoder
     {
-        public static DegreeDistribution Soliton;
+        public static DegreeDistribution soliton;
         private static string plaintext;
         private static byte[] plainbytes;
         private static int blockSize;
@@ -20,9 +20,16 @@ namespace FYP
             blockSize = plaintext.Length;
             if (type == SolitonDistributionType.ISD)
             {
-                //Soliton = new ISD(plaintext.Length);
+                soliton = new ISD(plaintext.Length);
             }
-            Soliton = new ISD(plaintext.Length);
+            else if (type == SolitonDistributionType.RSD)
+            {
+                soliton = new RSD(plaintext.Length, 0.5, 0.1);
+            }
+            else 
+            {
+                throw new Exception("Invalid Soliton Distribution Type");
+            }
         }
         public List<Drop> GenerateDroplets(int iterations) //blockSize * 2
         {
@@ -37,7 +44,7 @@ namespace FYP
             for (int i = 0; i < iterations; i++) //Creates K*1.10 drops, consider changing to variable
             {
                 partsInDrop.Clear();
-                degree = Soliton.next();
+                degree = soliton.next();
                 parts = new int[degree];
                 data = new byte[degree];
 
