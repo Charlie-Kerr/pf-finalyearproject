@@ -28,6 +28,7 @@ namespace FYP
         //Random Soliton Distribution
         private double[] isdWeights;
         private double[] rsdWeights;
+        private double[] normalisedRSDWeights;
         private Random random;
         private int spike; // M
         private double c;
@@ -37,21 +38,48 @@ namespace FYP
 
         public RSD(int N, double c, double delta) : base(N) 
         {
+            random = new Random();
             isdWeights = new double[N];
             generateISDWeights();
-            rsdWeights = new double[N];
-            generateRSDWeights();
+
             this.N = N;
             this.c = c;
             this.delta = delta;
-            random = new Random();
+
             R = calculateR();
             spike = calculateSpike();
+
+            rsdWeights = new double[N];
+            generateRSDWeights();
+
             beta = calculateBeta();
+
+            normalisedRSDWeights = new double[N];
+            generateNormalisedRSD();
+
         }
         public override int next() 
         {
-            return 0;
+            double u = random.NextDouble();
+            return inverseTransformSampling(u);
+        }
+
+        private int inverseTransformSampling(double u) //binary search through the normalised Robust Soliton Distribution weights
+        {
+            int low = 0;
+            int high = N - 1;
+
+            if (u <= normalisedRSDWeights[0]) return 1;
+
+            while (low <= high)
+            {
+                int mid = (low + high) / 2;
+                if (mid == 0) return mid + 2;
+                if (normalisedRSDWeights[mid - 1] < u && u <= normalisedRSDWeights[mid]) return mid + 1; //returns degree
+                else if (u >= normalisedRSDWeights[mid]) low = mid + 1;
+                else high = mid - 1;
+            }
+            return -1;
         }
 
         private double calculateR()
@@ -61,6 +89,14 @@ namespace FYP
         private int calculateSpike()
         {
             return (int)Math.Floor(N / R);
+        }
+
+        private void generateNormalisedRSD()
+        {
+            for(int i = 0; i < N; i++)
+            {
+                normalisedRSDWeights[i] = (isdWeights[i] + rsdWeights[i]) / beta;
+            }
         }
 
         private double calculateBeta()
