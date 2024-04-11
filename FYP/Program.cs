@@ -18,7 +18,7 @@ namespace FYP
             Decoder decoder = new Decoder(encoder.getByteSize(), drops);
             watch.Restart();
             //test decode and rebuilding plaintext functions by printing decoded text to console
-            Console.WriteLine(decoder.RebuildPlaintext(encoder, drops));
+            Console.WriteLine(decoder.RebuildPlaintext(encoder));
             watch.Stop();
             var totalDecodetime = watch.ElapsedMilliseconds;
             Console.WriteLine("Time taken to generate: " + generateTime + "\nTime taken to decode: " + totalDecodetime);

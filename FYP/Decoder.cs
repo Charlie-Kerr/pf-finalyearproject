@@ -11,13 +11,13 @@ namespace FYP
     {
         private int byteSize;
         private int chunkSize;
-        private static List<Drop> goblet;
-        public Decoder(int byteSize, List<Drop> goblet)
+        private static List<Drop> goblet = new List<Drop>();
+        public Decoder(int byteSize, List<Drop> inputDecode)
         {
             this.byteSize = byteSize;
-            goblet = new List<Drop>(goblet); //check here, not right
+            goblet = new List<Drop>(inputDecode);
         }
-        public string RebuildPlaintext(Encoder encoder, List<Drop> goblet)
+        public string RebuildPlaintext(Encoder encoder)
         {
             byte[] decoded = new byte[byteSize];
             List<int> parts = new List<int>();
