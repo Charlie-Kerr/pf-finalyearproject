@@ -71,51 +71,68 @@ namespace FYP
             fillPriorityQueue(decodeQueue);
 
             byte[] decoded = new byte[byteSize]; //contains all decoded parts data
-            List<int> parts = new List<int>(); //contains all decoded parts, used to help count
+            int decodeCount = 0;
             bool allSolutionsFound = false;
             byte nullValue = 0;
+            Drop currentDrop;
 
             while (allSolutionsFound == false)
             {
-                foreach (Drop drop in goblet)
+                if (decodeQueue.Peek().getDegree() == 1)
                 {
-                    if (drop.parts.Length == 1) //consider using more efficient search to find drops of degree 1
+                    currentDrop = decodeQueue.Dequeue();
+                    if (decoded[currentDrop.parts[0]] == 0)
                     {
-                        if (decoded[drop.parts[0]] == 0) //more efficient that .Contains, goes straight to the index
-                        {
-                            decoded[drop.parts[0]] = drop.data[0];
-                            parts.Add(drop.parts[0]);
-                            Console.WriteLine("Part " + drop.parts[0] + " has been decoded: [" + parts.Count + "/" + byteSize + " ]");
+                        decoded[currentDrop.parts[0]] = currentDrop.data[0];
+                        decodeCount++;
+                        Console.WriteLine("Part " + currentDrop.parts[0] + " has been decoded: [" + decodeCount + "/" + byteSize + " ]");
 
-                            //decrease the degree of all the drops by 1 that contain the part that has been decoded
-                            foreach (Drop d in goblet) //consider recursive function to decrease degree
+                        foreach (Drop d in dictionary[currentDrop.parts[0]])
+                        {
+                            if (d.getDegree() > 1)
                             {
-                                if (d.parts.Contains(drop.parts[0]) && d.parts.Length > 1)
-                                {
-                                    reduceDegree(d, drop.data[0], drop.parts[0]);
-                                }
+                                //remove drop from queue first? - drop degree value
+                                reduceDegree(d, currentDrop.data[0], currentDrop.parts[0]);
+                                //decodeQueue.Enqueue(d, d.getDegree()); //check this, and check capacity
                             }
                         }
-                        //else we discard the drop from the goblet, we already have a solution for it
                     }
+                }
+                else 
+                { 
+                    currentDrop = requestDrop(encoder);
+                    //need to reduce degree potentially here - maybe check if we already have all the parts
+                    decodeQueue.Enqueue(currentDrop, currentDrop.getDegree());
+                    addDropToDictionary(dictionary, currentDrop);
+                }
 
-                    //checks if we have decoded the data
-                    if (!decoded.Contains(nullValue))//need to check validity of data here, not matching original message
-                    {
-                        allSolutionsFound = true;
-                        break;
-                    }
+                //checks if we have decoded the data
+                if (!decoded.Contains(nullValue))
+                {
+                    allSolutionsFound = true;
+                    break;
                 }
             }
             //returns the decoded data in a string format when every byte has been decoded
             return Encoding.ASCII.GetString(decoded);
         }
 
+        static bool isDropDecoded(Drop drop, byte[] decodedParts)
+        {
+            for (int i = 0; i < drop.parts.Length; i++)
+            {
+                if (decodedParts[drop.parts[i]] == 0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         static void fillPriorityQueue(PriorityQueue<Drop, int> decodeQueue)
         {
             foreach (Drop drop in goblet)
             {
-                decodeQueue.Enqueue(drop, drop.parts.Length);
+                decodeQueue.Enqueue(drop, drop.getDegree());
             }
         }
 
@@ -134,6 +151,22 @@ namespace FYP
                         dictionary[drop.parts[i]] = new List<Drop>();
                         dictionary[drop.parts[i]].Add(drop);
                     }
+                }
+            }
+        }
+
+        static void addDropToDictionary(Dictionary<int, List<Drop>> dictionary, Drop drop)
+        {
+            for (int i = 0; i < drop.parts.Length; i++)
+            {
+                if (dictionary.ContainsKey(drop.parts[i]))
+                {
+                    dictionary[drop.parts[i]].Add(drop);
+                }
+                else
+                {
+                    dictionary[drop.parts[i]] = new List<Drop>();
+                    dictionary[drop.parts[i]].Add(drop);
                 }
             }
         }
@@ -156,6 +189,7 @@ namespace FYP
             //Creates a new parts array without the part that is being reduced, and XORs the data with the part being reduced
             drop.parts = drop.parts.Where(val => val != partToReduce).ToArray();
             drop.data[0] = drop.data[0] ^= decodedPart;
+            drop.setDegree(drop.parts.Length);//length of new parts array
         }
 
         static Drop requestDrop(Encoder encoder) 
