@@ -1,4 +1,6 @@
-﻿using System;
+﻿//References: https://github.com/k13n/soliton_distribution/blob/master/src/main/java/soliton/RobustSolitonGenerator.java
+//Used code to help implement the Robust Soliton Distribution
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +15,7 @@ namespace FYP
     }
     public abstract class DegreeDistribution
     {
-        protected int N; //size of data (consider changing to const?)
+        protected int N; //size of data - should be block size?
         public DegreeDistribution(int N) {
             this.N = N;
         }
@@ -22,9 +24,56 @@ namespace FYP
     }
 
     public class RSD : DegreeDistribution 
-    { 
-        public RSD(int N) : base(N) { }
+    {
+        //Random Soliton Distribution
+        private double[] weights;
+        private Random random;
+        private int spike; // M
+        private double c;
+        private double R;
+        private double delta; //chance of failure
+        private double beta; //normalisation factor
+
+        public RSD(int N, double c, double delta) : base(N) 
+        {
+            generateWeights();
+            this.N = N;
+            this.c = c;
+            this.delta = delta;
+            random = new Random();
+            R = calculateR();
+            spike = calculateSpike();
+            beta = calculateBeta();
+        }
         public override int next() { return 0; }
+
+        private double calculateR()
+        {
+            return Math.Ceiling(c * Math.Log(N / delta) * Math.Sqrt(N));
+        }
+        private int calculateSpike()
+        {
+            return (int)Math.Floor(N / R);
+        }
+
+        private int calculateBeta()
+        {
+            //return (int)Math.Floor((N - R) / (N - spike));
+            return 0;
+        }
+        private void generateWeights() //culmulative distribution function
+        {
+            weights[0] = 1.0 / N;
+
+            for (int i = 1; i < N; i++)
+            {
+                weights[i] = weights[i - 1] + pdf(i + 1);
+            }
+        }
+        private double pdf(double x) //probability density function
+        {
+            return 1.0 / (x * (x - 1));
+        }
     }
 
     public class ISD : DegreeDistribution 
