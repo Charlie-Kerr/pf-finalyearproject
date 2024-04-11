@@ -21,6 +21,12 @@ namespace FYP
         public abstract int next();
     }
 
+    public class RSD : DegreeDistribution 
+    { 
+        public RSD(int N) : base(N) { }
+        public override int next() { return 0; }
+    }
+
     public class ISD : DegreeDistribution 
     {
         //Ideal Soliton Distribution
