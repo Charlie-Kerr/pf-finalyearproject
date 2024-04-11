@@ -101,9 +101,14 @@ namespace FYP
                 else 
                 { 
                     currentDrop = requestDrop(encoder);
-                    //need to reduce degree potentially here - maybe check if we already have all the parts
-                    decodeQueue.Enqueue(currentDrop, currentDrop.getDegree());
-                    addDropToDictionary(dictionary, currentDrop);
+                    if (isDropDecoded(currentDrop, decoded) == false) 
+                    {
+                        //need to reduce degree potentially here - maybe check if we already have all the parts
+
+                        decodeQueue.Enqueue(currentDrop, currentDrop.getDegree());
+                        addDropToDictionary(dictionary, currentDrop);
+                    }
+                    //else if drop if all parts in the drop are decoded, program will loop and request again
                 }
 
                 //checks if we have decoded the data
@@ -117,11 +122,11 @@ namespace FYP
             return Encoding.ASCII.GetString(decoded);
         }
 
-        static bool isDropDecoded(Drop drop, byte[] decodedParts)
+        static bool isDropDecoded(Drop drop, byte[] decoded)
         {
             for (int i = 0; i < drop.parts.Length; i++)
             {
-                if (decodedParts[drop.parts[i]] == 0)
+                if (decoded[drop.parts[i]] == 0)
                 {
                     return false;
                 }
@@ -184,6 +189,15 @@ namespace FYP
             return result;
         }
 
+        public static void reduceMultipleDegrees(Drop drop, byte[] decodedParts, int[] partsToReduce)
+        {
+            foreach (int part in partsToReduce)
+            {
+                reduceDegree(drop, decodedParts[part], part);
+              /*drop.parts = drop.parts.Where(val => val != part).ToArray();
+                drop.data[0] = drop.data[0] ^= decodedParts[part];*/
+            }
+        }
         public static void reduceDegree(Drop drop, byte decodedPart, int partToReduce)
         {
             //Creates a new parts array without the part that is being reduced, and XORs the data with the part being reduced
