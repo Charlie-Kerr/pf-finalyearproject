@@ -10,11 +10,23 @@ namespace FYP
     {
         public int[] parts;
         public byte[] data;
+        private int degree { get; set; }
 
         public Drop(int[] parts, byte[] data)
         {
             this.parts = parts;
             this.data = data;
+            this.degree = parts.Length;
+        }
+
+        public int getDegree()
+        {
+            return degree;
+        }
+
+        public void setDegree(int degree)
+        {
+            this.degree = degree;
         }
 
         public override string ToString()

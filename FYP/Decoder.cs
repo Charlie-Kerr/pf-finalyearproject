@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,71 +11,159 @@ namespace FYP
     {
         private int byteSize;
         private int chunkSize;
-        public Decoder(int byteSize)
+        private static List<Drop> goblet = new List<Drop>();
+        public Decoder(int byteSize, List<Drop> inputDecode)
         {
             this.byteSize = byteSize;
+            goblet = new List<Drop>(inputDecode);
         }
-        public string RebuildPlaintext(List<Drop> goblet)
+
+        public string improvedRebuildPlaintext(Encoder encoder)
         {
-            byte[] decoded = new byte[byteSize];
-            List<int> parts = new List<int>();
+            //Contains dictionary which looks up by part number to find all drops containing that part
+            Dictionary<int, List<Drop>> dictionary = new Dictionary<int, List<Drop>>();
+            fillDictionary(dictionary);
+
+            //Priority queue to store drops in order of degree
+            PriorityQueue<Drop, int> decodeQueue = new PriorityQueue<Drop, int>(goblet.Count);
+            fillPriorityQueue(decodeQueue);
+            List<(Drop, int)> unorderedDecodeQueue = decodeQueue.UnorderedItems.ToList(); //used to reset priorities
+
+            byte[] decoded = new byte[byteSize]; //contains all decoded parts data
+            int decodeCount = 0;
             bool allSolutionsFound = false;
             byte nullValue = 0;
+            Drop currentDrop;
+            List<Drop> dropsToRemoveFromDictionary = new List<Drop>();
 
             while (allSolutionsFound == false)
             {
-                foreach (Drop drop in goblet)
+                unorderedDecodeQueue = decodeQueue.UnorderedItems.ToList();//resets unorderedDecodeQueue
+                if (decodeQueue.Peek().getDegree() == 1)
                 {
-                    if (drop.parts.Length == 1) //consider using more efficient search to find drops of degree 1
+                    currentDrop = decodeQueue.Dequeue();
+                    if (decoded[currentDrop.parts[0]] == 0)
                     {
-                        if (decoded[drop.parts[0]] == 0) //more efficient that .Contains, goes straight to the index
-                        {
-                            decoded[drop.parts[0]] = drop.data[0];
-                            parts.Add(drop.parts[0]);
-                            Console.WriteLine("Part " + drop.parts[0] + " has been decoded: [" + parts.Count + "/" + byteSize + " ]");
+                        decoded[currentDrop.parts[0]] = currentDrop.data[0];
+                        decodeCount++;
+                        Console.WriteLine("Part " + currentDrop.parts[0] + " has been decoded: [" + decodeCount + "/" + byteSize + " ]");
 
-                            //decrease the degree of all the drops by 1 that contain the part that has been decoded
-                            foreach (Drop d in goblet) //consider recursive function to decrease degree
+                        foreach (Drop d in dictionary[currentDrop.parts[0]])
+                        {
+                            if (d.getDegree() > 1)
                             {
-                                if (d.parts.Contains(drop.parts[0]) && d.parts.Length > 1)
-                                {
-                                    reduceDegree(d, drop.data[0], drop.parts[0]);
-                                }
+                                unorderedDecodeQueue.Remove((d, d.getDegree()));
+                                reduceDegree(d, currentDrop.data[0], currentDrop.parts[0]);
+                                unorderedDecodeQueue.Add((d, d.getDegree()));
+                                dropsToRemoveFromDictionary.Add(d);
                             }
                         }
-                        //else we discard the drop from the goblet, we already have a solution for it
+                        foreach (Drop d in dropsToRemoveFromDictionary) //removes the drops from the dictionary
+                        {
+                            dictionary[currentDrop.parts[0]].Remove(d);
+                        }
+                        decodeQueue = new PriorityQueue<Drop, int>(unorderedDecodeQueue);//resets the priority queue with updated values
                     }
-
-                    //checks if we have decoded the data
-                    if (!decoded.Contains(nullValue))//need to check validity of data here, not matching original message
+                }
+                else 
+                { 
+                    currentDrop = requestDrop(encoder);
+                    if (isDropDecoded(currentDrop, decoded) == false) 
                     {
-                        allSolutionsFound = true;
-                        break;
+                        reduceMultipleDegrees(currentDrop, decoded, currentDrop.parts);//reduces by as many parts as possible
+                        decodeQueue.Enqueue(currentDrop, currentDrop.getDegree());
+                        addDropToDictionary(dictionary, currentDrop);
                     }
+                    //else: if all parts in the drop are decoded, program will loop and request again
+                }
+
+                //checks if we have decoded the data
+                if (!decoded.Contains(nullValue))
+                {
+                    allSolutionsFound = true;
+                    break;
                 }
             }
             //returns the decoded data in a string format when every byte has been decoded
             return Encoding.ASCII.GetString(decoded);
         }
-        public byte decode(Drop drop, byte[] decodedParts, int partToDecode)
+
+        static bool isDropDecoded(Drop drop, byte[] decoded)
         {
-            byte result = drop.data[0];
             for (int i = 0; i < drop.parts.Length; i++)
             {
-                if (i != partToDecode)
+                if (decoded[drop.parts[i]] == 0)
                 {
-                    //XORs the byte to decode with all the parts that were used to encode it
-                    result ^= decodedParts[drop.parts[i]];
+                    return false;
                 }
             }
-            return result;
+            return true;
+        }
+        public static void fillPriorityQueue(PriorityQueue<Drop, int> decodeQueue)
+        {
+            foreach (Drop drop in goblet)
+            {
+                decodeQueue.Enqueue(drop, drop.getDegree());
+            }
         }
 
+        public static void fillDictionary(Dictionary<int, List<Drop>> dictionary) 
+        {
+            foreach (Drop drop in goblet)
+            {
+                for (int i = 0; i < drop.parts.Length; i++)
+                {
+                    if (dictionary.ContainsKey(drop.parts[i]))
+                    {
+                        dictionary[drop.parts[i]].Add(drop);
+                    }
+                    else
+                    {
+                        dictionary[drop.parts[i]] = new List<Drop>();
+                        dictionary[drop.parts[i]].Add(drop);
+                    }
+                }
+            }
+        }
+
+        static void addDropToDictionary(Dictionary<int, List<Drop>> dictionary, Drop drop)
+        {
+            for (int i = 0; i < drop.parts.Length; i++)
+            {
+                if (dictionary.ContainsKey(drop.parts[i]))
+                {
+                    dictionary[drop.parts[i]].Add(drop);
+                }
+                else
+                {
+                    dictionary[drop.parts[i]] = new List<Drop>();
+                    dictionary[drop.parts[i]].Add(drop);
+                }
+            }
+        }
+
+        public static void reduceMultipleDegrees(Drop drop, byte[] decodedParts, int[] partsToReduce)
+        {
+            foreach (int part in partsToReduce)
+            {
+                if (decodedParts[part] != 0)
+                {
+                    reduceDegree(drop, decodedParts[part], part);
+                }
+            }
+        }
         public static void reduceDegree(Drop drop, byte decodedPart, int partToReduce)
         {
             //Creates a new parts array without the part that is being reduced, and XORs the data with the part being reduced
             drop.parts = drop.parts.Where(val => val != partToReduce).ToArray();
             drop.data[0] = drop.data[0] ^= decodedPart;
+            drop.setDegree(drop.parts.Length);//length of new parts array
+        }
+
+        static Drop requestDrop(Encoder encoder) 
+        {
+            Console.WriteLine("Requested a new drop.");
+            return encoder.GenerateDroplets(1)[0];
         }
     }
 }
