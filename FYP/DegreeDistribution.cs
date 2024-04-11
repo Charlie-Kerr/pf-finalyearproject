@@ -26,7 +26,8 @@ namespace FYP
     public class RSD : DegreeDistribution 
     {
         //Random Soliton Distribution
-        private double[] weights;
+        private double[] isdWeights;
+        private double[] rsdWeights;
         private Random random;
         private int spike; // M
         private double c;
@@ -36,7 +37,10 @@ namespace FYP
 
         public RSD(int N, double c, double delta) : base(N) 
         {
-            generateWeights();
+            isdWeights = new double[N];
+            generateISDWeights();
+            rsdWeights = new double[N];
+            generateRSDWeights();
             this.N = N;
             this.c = c;
             this.delta = delta;
@@ -45,7 +49,10 @@ namespace FYP
             spike = calculateSpike();
             beta = calculateBeta();
         }
-        public override int next() { return 0; }
+        public override int next() 
+        {
+            return 0;
+        }
 
         private double calculateR()
         {
@@ -56,18 +63,43 @@ namespace FYP
             return (int)Math.Floor(N / R);
         }
 
-        private int calculateBeta()
+        private double calculateBeta()
         {
-            //return (int)Math.Floor((N - R) / (N - spike));
-            return 0;
+            double sum = 0;
+            for (int i = 1; i <= N; i++)
+            {
+                sum += isdWeights[i] + rsdWeights[i];
+            }
+            return sum;
         }
-        private void generateWeights() //culmulative distribution function
+        private void generateISDWeights() //culmulative distribution function
         {
-            weights[0] = 1.0 / N;
+            isdWeights[0] = 1.0 / N;
 
             for (int i = 1; i < N; i++)
             {
-                weights[i] = weights[i - 1] + pdf(i + 1);
+                isdWeights[i] = isdWeights[i - 1] + pdf(i + 1);
+            }
+        }
+
+        private void generateRSDWeights() //culmulative distribution function
+        {
+            rsdWeights[0] = 0;
+
+            for (int i = 1; i < N; i++)
+            {
+                if (1 <= i && i <= spike - 1)
+                {
+                    rsdWeights[i] = rsdWeights[i - 1] + (1.0 / (i * spike));
+                }
+                else if (i == spike)
+                {
+                    rsdWeights[i] = rsdWeights[i - 1] + Math.Log(R / delta) / spike;
+                }
+                else 
+                {
+                    rsdWeights[i] = 0;
+                }
             }
         }
         private double pdf(double x) //probability density function
