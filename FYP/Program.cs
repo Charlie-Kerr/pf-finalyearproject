@@ -24,7 +24,7 @@ namespace FYP
             Console.WriteLine("Time taken to generate: " + generateTime + "\nTime taken to decode: " + totalDecodetime);*/
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            encodeSoliton(SolitonDistributionType.RSD);
+            encodeSoliton(SolitonDistributionType.ISD);
             watch.Stop();
             var totalTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Time taken to generate and decode using ISD: " + totalTime + "ms");
