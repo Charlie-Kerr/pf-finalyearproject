@@ -69,7 +69,7 @@ namespace FYP
             //Priority queue to store drops in order of degree
             PriorityQueue<Drop, int> decodeQueue = new PriorityQueue<Drop, int>(goblet.Count);
             fillPriorityQueue(decodeQueue);
-            List<(Drop, int)> temp = decodeQueue.UnorderedItems.ToList(); //used to reset priorities
+            List<(Drop, int)> unorderedDecodeQueue = decodeQueue.UnorderedItems.ToList(); //used to reset priorities
 
             byte[] decoded = new byte[byteSize]; //contains all decoded parts data
             int decodeCount = 0;
@@ -80,7 +80,7 @@ namespace FYP
 
             while (allSolutionsFound == false)
             {
-                temp = decodeQueue.UnorderedItems.ToList();//resets temp
+                unorderedDecodeQueue = decodeQueue.UnorderedItems.ToList();//resets unorderedDecodeQueue
                 if (decodeQueue.Peek().getDegree() == 1)
                 {
                     currentDrop = decodeQueue.Dequeue();
@@ -94,9 +94,9 @@ namespace FYP
                         {
                             if (d.getDegree() > 1)
                             {
-                                temp.Remove((d, d.getDegree()));
-                                reduceDegree(d, currentDrop.data[0], currentDrop.parts[0]); //NEED TO REMOVE FROM DICTIONARY
-                                temp.Add((d, d.getDegree()));
+                                unorderedDecodeQueue.Remove((d, d.getDegree()));
+                                reduceDegree(d, currentDrop.data[0], currentDrop.parts[0]);
+                                unorderedDecodeQueue.Add((d, d.getDegree()));
                                 dropsToRemoveFromDictionary.Add(d);
                             }
                         }
@@ -104,7 +104,7 @@ namespace FYP
                         {
                             dictionary[currentDrop.parts[0]].Remove(d);
                         }
-                        decodeQueue = new PriorityQueue<Drop, int>(temp);//resets the priority queue with updated values
+                        decodeQueue = new PriorityQueue<Drop, int>(unorderedDecodeQueue);//resets the priority queue with updated values
                     }
                 }
                 else 
@@ -112,12 +112,11 @@ namespace FYP
                     currentDrop = requestDrop(encoder);
                     if (isDropDecoded(currentDrop, decoded) == false) 
                     {
-                        //need to reduce degree potentially here - maybe check if we already have all the parts
-
+                        reduceMultipleDegrees(currentDrop, decoded, currentDrop.parts);//reduces by as many parts as possible
                         decodeQueue.Enqueue(currentDrop, currentDrop.getDegree());
                         addDropToDictionary(dictionary, currentDrop);
                     }
-                    //else if drop if all parts in the drop are decoded, program will loop and request again
+                    //else: if all parts in the drop are decoded, program will loop and request again
                 }
 
                 //checks if we have decoded the data
@@ -202,7 +201,10 @@ namespace FYP
         {
             foreach (int part in partsToReduce)
             {
-                reduceDegree(drop, decodedParts[part], part);
+                if (decodedParts[part] != 0)
+                {
+                    reduceDegree(drop, decodedParts[part], part);
+                }
             }
         }
         public static void reduceDegree(Drop drop, byte decodedPart, int partToReduce)
@@ -214,7 +216,8 @@ namespace FYP
         }
 
         static Drop requestDrop(Encoder encoder) 
-        { 
+        {
+            Console.WriteLine("Requested a new drop.");
             return encoder.GenerateDroplets(1)[0];
         }
     }

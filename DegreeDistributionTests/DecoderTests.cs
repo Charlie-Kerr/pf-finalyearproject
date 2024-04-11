@@ -85,5 +85,19 @@ namespace FYPTests
             }
         }
 
+        [TestMethod]
+        public void testImprovedRebuildPlaintext()
+        {
+            string testString = "Hello World.";
+            byte[] decodedParts = Encoding.ASCII.GetBytes(testString);
+
+            FYP.Encoder encoder = new FYP.Encoder("test.txt", SolitonDistributionType.ISD);
+            List<Drop> drops = encoder.GenerateDroplets(2);
+            FYP.Decoder decoder = new FYP.Decoder(encoder.getByteSize(), drops);
+            string rebuiltPlaintext = decoder.improvedRebuildPlaintext(encoder);
+
+            Assert.IsTrue(rebuiltPlaintext == testString);  
+        }
+
     }
 }
