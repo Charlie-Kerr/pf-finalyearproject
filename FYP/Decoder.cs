@@ -18,6 +18,11 @@ namespace FYP
             goblet = new List<Drop>(inputDecode);
         }
 
+        public int getGobletSize()
+        {
+            return goblet.Count;
+        }
+
         public string improvedRebuildPlaintext(Encoder encoder)
         {
             //Contains dictionary which looks up by part number to find all drops containing that part
@@ -34,12 +39,14 @@ namespace FYP
             bool allSolutionsFound = false;
             byte nullValue = 0;
             Drop currentDrop;
+            int nullPriority = 0;
             List<Drop> dropsToRemoveFromDictionary = new List<Drop>();
 
             while (allSolutionsFound == false)
             {
                 unorderedDecodeQueue = decodeQueue.UnorderedItems.ToList();//resets unorderedDecodeQueue
-                if (decodeQueue.Peek().getDegree() == 1)
+                nullPriority = 0;
+                if (decodeQueue.TryPeek(out currentDrop, out nullPriority) && nullPriority == 1) //decodeQueue.Peek().getDegree() == 1
                 {
                     currentDrop = decodeQueue.Dequeue();
                     if (decoded[currentDrop.parts[0]] == 0)
@@ -73,6 +80,7 @@ namespace FYP
                         reduceMultipleDegrees(currentDrop, decoded, currentDrop.parts);//reduces by as many parts as possible
                         decodeQueue.Enqueue(currentDrop, currentDrop.getDegree());
                         addDropToDictionary(dictionary, currentDrop);
+                        goblet.Add(currentDrop);//added to goblet to keep track of number of drops used to decode
                     }
                     //else: if all parts in the drop are decoded, program will loop and request again
                 }
@@ -163,7 +171,7 @@ namespace FYP
         static Drop requestDrop(Encoder encoder) 
         {
             Console.WriteLine("Requested a new drop.");
-            return encoder.GenerateDroplets(1)[0];
+            return encoder.GenerateDroplets(1,0)[0];
         }
     }
 }

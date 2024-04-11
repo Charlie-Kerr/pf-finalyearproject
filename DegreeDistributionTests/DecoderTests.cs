@@ -18,7 +18,7 @@ namespace FYPTests
             byte[] decodedParts = Encoding.ASCII.GetBytes(testString);
 
             FYP.Encoder encoder = new FYP.Encoder("test.txt", SolitonDistributionType.ISD);
-            List<Drop> drops = encoder.GenerateDroplets((int)encoder.getByteSize());
+            List<Drop> drops = encoder.GenerateDroplets((int)encoder.getByteSize(), 0);
 
             int[] partsToReduce = drops[0].parts.Skip(1).ToArray();
             FYP.Decoder.reduceMultipleDegrees(drops[0], decodedParts, partsToReduce);
@@ -32,7 +32,7 @@ namespace FYPTests
             byte[] decodedParts = Encoding.ASCII.GetBytes(testString);
 
             FYP.Encoder encoder = new FYP.Encoder("test.txt", SolitonDistributionType.ISD);
-            List<Drop> drops = encoder.GenerateDroplets((int)encoder.getByteSize());
+            List<Drop> drops = encoder.GenerateDroplets((int)encoder.getByteSize(), 0);
 
             PriorityQueue<Drop, int> priorityQueue = new PriorityQueue<Drop, int>(drops.Count);
             FYP.Decoder.fillPriorityQueue(priorityQueue);
@@ -62,7 +62,7 @@ namespace FYPTests
         { 
             Dictionary<int, List<Drop>> dictionary = new Dictionary<int, List<Drop>>();
             FYP.Encoder encoder = new FYP.Encoder("test.txt", SolitonDistributionType.ISD);
-            List<Drop> drops = encoder.GenerateDroplets((int)encoder.getByteSize() * 2);
+            List<Drop> drops = encoder.GenerateDroplets((int)encoder.getByteSize() * 2, 0);
             FYP.Decoder decoder = new FYP.Decoder(encoder.getByteSize(), drops);
             FYP.Decoder.fillDictionary(dictionary);
             List<Drop> dropsToRemove = new List<Drop>();
@@ -92,7 +92,7 @@ namespace FYPTests
             byte[] decodedParts = Encoding.ASCII.GetBytes(testString);
 
             FYP.Encoder encoder = new FYP.Encoder("test.txt", SolitonDistributionType.ISD);
-            List<Drop> drops = encoder.GenerateDroplets(2);
+            List<Drop> drops = encoder.GenerateDroplets(2, 0);
             FYP.Decoder decoder = new FYP.Decoder(encoder.getByteSize(), drops);
             string rebuiltPlaintext = decoder.improvedRebuildPlaintext(encoder);
 

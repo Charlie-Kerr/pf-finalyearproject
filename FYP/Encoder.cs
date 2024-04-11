@@ -32,7 +32,7 @@ namespace FYP
                 throw new Exception("Invalid Soliton Distribution Type");
             }
         }
-        public List<Drop> GenerateDroplets(int iterations) //blockSize * 2
+        public List<Drop> GenerateDroplets(int iterations, int chosenDegree) //blockSize * 2
         {
             Random rand = new Random();
             int randomPart = 0;
@@ -46,7 +46,14 @@ namespace FYP
             while(drops.Count < iterations)
             {
                 partsInDrop.Clear();
-                degree = soliton.next();
+                if(chosenDegree != 0)
+                {
+                    degree = chosenDegree;
+                }
+                else
+                {
+                    degree = soliton.next();
+                }
                 parts = new int[degree];
                 data = new byte[degree];
 
