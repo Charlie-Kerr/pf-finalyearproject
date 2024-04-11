@@ -62,11 +62,16 @@ namespace FYP
 
         public string improvedRebuildPlaintext(Encoder encoder)
         {
-            Dictionary<int, List<Drop>> dictionary = new Dictionary<int, List<Drop>>(); //Contains dictionary which looks up by part number ot find all drops containing that part
+            //Contains dictionary which looks up by part number to find all drops containing that part
+            Dictionary<int, List<Drop>> dictionary = new Dictionary<int, List<Drop>>();
             fillDictionary(dictionary);
 
-            byte[] decoded = new byte[byteSize];
-            List<int> parts = new List<int>();
+            //Priority queue to store drops in order of degree
+            PriorityQueue<Drop, int> decodeQueue = new PriorityQueue<Drop, int>(goblet.Count);
+            fillPriorityQueue(decodeQueue);
+
+            byte[] decoded = new byte[byteSize]; //contains all decoded parts data
+            List<int> parts = new List<int>(); //contains all decoded parts, used to help count
             bool allSolutionsFound = false;
             byte nullValue = 0;
 
@@ -104,6 +109,14 @@ namespace FYP
             }
             //returns the decoded data in a string format when every byte has been decoded
             return Encoding.ASCII.GetString(decoded);
+        }
+
+        static void fillPriorityQueue(PriorityQueue<Drop, int> decodeQueue)
+        {
+            foreach (Drop drop in goblet)
+            {
+                decodeQueue.Enqueue(drop, drop.parts.Length);
+            }
         }
 
         static void fillDictionary(Dictionary<int, List<Drop>> dictionary) 
