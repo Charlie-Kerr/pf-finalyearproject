@@ -53,7 +53,7 @@ namespace FYP
                     {
                         decoded[currentDrop.parts[0]] = currentDrop.data[0];
                         decodeCount++;
-                        Console.WriteLine("Part " + currentDrop.parts[0] + " has been decoded: [" + decodeCount + "/" + byteSize + " ]");
+                        Console.WriteLine("Part " + currentDrop.parts[0] + " has been decoded: [" + decodeCount + "/" + byteSize + "]");
 
                         foreach (Drop d in dictionary[currentDrop.parts[0]])
                         {
@@ -170,8 +170,8 @@ namespace FYP
 
         static Drop requestDrop(Encoder encoder) 
         {
-            Console.WriteLine("Requested a new drop.");
-            return encoder.GenerateDroplets(1,0)[0];
+            Console.WriteLine("Requested a new drop");
+            return encoder.generateDroplets(1,0)[0];
         }
     }
 }

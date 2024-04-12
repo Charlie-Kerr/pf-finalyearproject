@@ -25,14 +25,14 @@ namespace FYP
             }
             else if (type == SolitonDistributionType.RSD)
             {
-                soliton = new RSD(plaintext.Length, 0.5, 0.1);
+                soliton = new RSD(plaintext.Length, 0.2, 0.05);
             }
             else 
             {
                 throw new Exception("Invalid Soliton Distribution Type");
             }
         }
-        public List<Drop> GenerateDroplets(int iterations, int chosenDegree) //blockSize * 2
+        public List<Drop> generateDroplets(int iterations, int chosenDegree) //blockSize * 2
         {
             Random rand = new Random();
             int randomPart = 0;

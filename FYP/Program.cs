@@ -9,6 +9,9 @@ namespace FYP
     {
         static void Main(string[] args)
         {
+            int TEST_SIZE = Encoding.ASCII.GetBytes(File.ReadAllText("text.txt")).Length;
+            int TEST_SIZE_10K = Encoding.ASCII.GetBytes(File.ReadAllText("10000text.txt")).Length;
+
             Console.WriteLine("Welcome to my Digital Fountain!");
             Console.WriteLine("------------------------------------------------------------");
             Console.WriteLine("Please press enter to test decoding algorithms");
@@ -19,6 +22,7 @@ namespace FYP
             var totalTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Time taken to generate and decode using ISD: " + totalTime + "ms");
             Console.WriteLine("Amount of drops used to decode using ISD: " + dropsUsed);
+            Console.WriteLine("Overhead drops: {0} Overhead percentage: {1}", dropsUsed - TEST_SIZE_10K, Math.Round((decimal)dropsUsed / TEST_SIZE_10K, 2));
             Console.WriteLine("------------------------------------------------------------");
             Console.WriteLine("Please press enter to decode using RSD");
             Console.ReadLine();
@@ -28,13 +32,14 @@ namespace FYP
             totalTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Time taken to generate and decode using RSD: " + totalTime + "ms");
             Console.WriteLine("Amount of drops used to decode using RSD: " + dropsUsed);
+            Console.WriteLine("Overhead drops: {0} Overhead percentage: {1}", dropsUsed - TEST_SIZE_10K, Math.Round((decimal)dropsUsed / TEST_SIZE_10K, 2));
             Console.WriteLine("------------------------------------------------------------");
         }
 
         static int encodeSoliton(SolitonDistributionType type)
         {
-            Encoder encoder = new Encoder("text.txt", type); //from bin\debug\net6.0\text.txt
-            List<Drop> drops = encoder.GenerateDroplets(encoder.getByteSize() / 100, 1);//(int)(encoder.getByteSize()))
+            Encoder encoder = new Encoder("10000text.txt", type); //from bin\debug\net6.0\text.txt
+            List<Drop> drops = encoder.generateDroplets(encoder.getByteSize() / 100, 1);//(int)(encoder.getByteSize()))
             return decode(encoder, drops);
         }
 
