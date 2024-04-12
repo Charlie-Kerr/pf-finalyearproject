@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,11 @@ namespace FYP
         {
             this.byteSize = byteSize;
             goblet = new List<Drop>(inputDecode);
+        }
+
+        public int getGobletSize()
+        {
+            return goblet.Count;
         }
 
         public string improvedRebuildPlaintext(Encoder encoder)
@@ -34,20 +40,21 @@ namespace FYP
             bool allSolutionsFound = false;
             byte nullValue = 0;
             Drop currentDrop;
+            int nullPriority = 0;
             List<Drop> dropsToRemoveFromDictionary = new List<Drop>();
 
             while (allSolutionsFound == false)
             {
                 unorderedDecodeQueue = decodeQueue.UnorderedItems.ToList();//resets unorderedDecodeQueue
-                if (decodeQueue.Peek().getDegree() == 1)
+                nullPriority = 0;
+                if (decodeQueue.TryPeek(out currentDrop, out nullPriority) && nullPriority == 1) //ensures that the queue has values before dequeueing
                 {
                     currentDrop = decodeQueue.Dequeue();
                     if (decoded[currentDrop.parts[0]] == 0)
                     {
                         decoded[currentDrop.parts[0]] = currentDrop.data[0];
                         decodeCount++;
-                        Console.WriteLine("Part " + currentDrop.parts[0] + " has been decoded: [" + decodeCount + "/" + byteSize + " ]");
-
+                        Console.WriteLine("Part " + currentDrop.parts[0] + " has been decoded: [" + decodeCount + "/" + byteSize + "]");
                         foreach (Drop d in dictionary[currentDrop.parts[0]])
                         {
                             if (d.getDegree() > 1)
@@ -73,6 +80,7 @@ namespace FYP
                         reduceMultipleDegrees(currentDrop, decoded, currentDrop.parts);//reduces by as many parts as possible
                         decodeQueue.Enqueue(currentDrop, currentDrop.getDegree());
                         addDropToDictionary(dictionary, currentDrop);
+                        goblet.Add(currentDrop);//added to goblet to keep track of number of drops used to decode
                     }
                     //else: if all parts in the drop are decoded, program will loop and request again
                 }
@@ -162,8 +170,8 @@ namespace FYP
 
         static Drop requestDrop(Encoder encoder) 
         {
-            Console.WriteLine("Requested a new drop.");
-            return encoder.GenerateDroplets(1)[0];
+            Console.WriteLine("Requested a new drop");
+            return encoder.generateDroplets(1,0)[0];
         }
     }
 }

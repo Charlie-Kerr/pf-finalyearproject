@@ -124,11 +124,18 @@ namespace FYPTests
             HashSet<HashSet<int>> hashSet = new HashSet<HashSet<int>>(HashSet<int>.CreateSetComparer());
             int[] array1 = new int[] { 1, 2, 3, 4, 5 };
             int[] array2 = new int[] { 5, 2, 3, 4, 1 };
+            int[] array3 = new int[] { 1, 2, 3, 4 };
+            int[] array4 = new int[] { 1, 2, 3, 4, 5, 6 };
 
             hashSet.Add(array1.ToHashSet());
             hashSet.Add(array2.ToHashSet());
-
+            if(!array3.ToHashSet().IsSubsetOf(array1.ToHashSet()))
+            {
+                hashSet.Add(array3.ToHashSet());
+            }
             Assert.IsTrue(hashSet.Count == 1);
+            hashSet.Add(array4.ToHashSet());
+            Assert.IsTrue(hashSet.Count == 2);
         }
 
         static List<Drop> ISDGenerateDroplets(byte[] plain, int size)

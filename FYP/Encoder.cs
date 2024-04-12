@@ -9,10 +9,11 @@ namespace FYP
 {
     public class Encoder
     {
-        public static DegreeDistribution Soliton;
+        public static DegreeDistribution soliton;
         private static string plaintext;
         private static byte[] plainbytes;
         private static int blockSize;
+        private static HashSet<HashSet<int>> encodedDrops = new HashSet<HashSet<int>>(HashSet<int>.CreateSetComparer());
         public Encoder(string path, SolitonDistributionType type)
         {
             plaintext = File.ReadAllText(path);
@@ -20,11 +21,18 @@ namespace FYP
             blockSize = plaintext.Length;
             if (type == SolitonDistributionType.ISD)
             {
-                //Soliton = new ISD(plaintext.Length);
+                soliton = new ISD(plaintext.Length);
             }
-            Soliton = new ISD(plaintext.Length);
+            else if (type == SolitonDistributionType.RSD)
+            {
+                soliton = new RSD(plaintext.Length, 0.2, 0.05);
+            }
+            else 
+            {
+                throw new Exception("Invalid Soliton Distribution Type");
+            }
         }
-        public List<Drop> GenerateDroplets(int iterations) //blockSize * 2
+        public List<Drop> generateDroplets(int iterations, int chosenDegree)
         {
             Random rand = new Random();
             int randomPart = 0;
@@ -33,11 +41,19 @@ namespace FYP
             int[] parts;
             List<Drop> drops = new List<Drop>();
             HashSet<int> partsInDrop = new HashSet<int>();
+            int count = 0;
 
-            for (int i = 0; i < iterations; i++) //Creates K*1.10 drops, consider changing to variable
+            while(drops.Count < iterations)
             {
                 partsInDrop.Clear();
-                degree = Soliton.next();
+                if(chosenDegree != 0)
+                {
+                    degree = chosenDegree;
+                }
+                else
+                {
+                    degree = soliton.next();
+                }
                 parts = new int[degree];
                 data = new byte[degree];
 
@@ -51,11 +67,17 @@ namespace FYP
                     data[j] = plainbytes[randomPart];
                     parts[j] = randomPart;
                 }
+                count = encodedDrops.Count;
+                encodedDrops.Add(parts.ToHashSet());
                 drops.Add(new Drop(parts, encode(data, parts)));
+                if(encodedDrops.Count != count + 1) //ensures that the same drop is not encoded twice
+                {
+                    drops.Remove(drops.Last());
+                }
             }
             return drops;
         }
-        public static byte[] encode(byte[] data, int[] parts) //check drops that are being encoded are not the same as drops already encoded
+        public static byte[] encode(byte[] data, int[] parts)
         {
             byte result = data[0];
             for (int i = 1; i < parts.Count(); i++)
