@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,7 +47,7 @@ namespace FYP
             {
                 unorderedDecodeQueue = decodeQueue.UnorderedItems.ToList();//resets unorderedDecodeQueue
                 nullPriority = 0;
-                if (decodeQueue.TryPeek(out currentDrop, out nullPriority) && nullPriority == 1) //decodeQueue.Peek().getDegree() == 1
+                if (decodeQueue.TryPeek(out currentDrop, out nullPriority) && nullPriority == 1) //ensures that the queue has values before dequeueing
                 {
                     currentDrop = decodeQueue.Dequeue();
                     if (decoded[currentDrop.parts[0]] == 0)
@@ -54,7 +55,6 @@ namespace FYP
                         decoded[currentDrop.parts[0]] = currentDrop.data[0];
                         decodeCount++;
                         Console.WriteLine("Part " + currentDrop.parts[0] + " has been decoded: [" + decodeCount + "/" + byteSize + "]");
-
                         foreach (Drop d in dictionary[currentDrop.parts[0]])
                         {
                             if (d.getDegree() > 1)

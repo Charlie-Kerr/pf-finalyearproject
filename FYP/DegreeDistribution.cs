@@ -1,5 +1,5 @@
 ﻿//References: https://github.com/k13n/soliton_distribution/blob/master/src/main/java/soliton/RobustSolitonGenerator.java
-//Used code to help implement the Robust Soliton Distribution
+//Used for the RSD class
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace FYP
     }
     public abstract class DegreeDistribution
     {
-        protected int N; //size of data - should be block size?
+        protected int N; //size of data
         public DegreeDistribution(int N) {
             this.N = N;
         }
@@ -122,7 +122,7 @@ namespace FYP
             {
                 if (1 <= i && i <= spike - 1)
                 {
-                    rsdWeights[i] = rsdWeights[i - 1] + (1.0 / (i * spike)); //does this need to be +1?
+                    rsdWeights[i] = rsdWeights[i - 1] + (1.0 / (i * spike));
                 }
                 else if (i == spike)
                 {
@@ -209,7 +209,6 @@ namespace FYP
             for (int i = 1; i < N; i++)
             {
                 weights[i] = weights[i - 1] + pdf(i+1);
-                //Console.WriteLine(weights[i - 1]);
             }
         }
 

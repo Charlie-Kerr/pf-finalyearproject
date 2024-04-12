@@ -31,7 +31,7 @@ namespace FYP
 
         public override string ToString()
         {
-            return String.Format("Drop degree is {0}\nThe drops in this drop: {1}", parts.Length, string.Join(",", parts));
+            return String.Format("Drop degree: {0} \nThe parts in this drop: {1}", parts.Length, string.Join(",", parts));
         }
 
     }

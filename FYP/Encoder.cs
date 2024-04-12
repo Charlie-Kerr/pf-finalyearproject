@@ -32,7 +32,7 @@ namespace FYP
                 throw new Exception("Invalid Soliton Distribution Type");
             }
         }
-        public List<Drop> generateDroplets(int iterations, int chosenDegree) //blockSize * 2
+        public List<Drop> generateDroplets(int iterations, int chosenDegree)
         {
             Random rand = new Random();
             int randomPart = 0;
@@ -77,7 +77,7 @@ namespace FYP
             }
             return drops;
         }
-        public static byte[] encode(byte[] data, int[] parts) //check drops that are being encoded are not the same as drops already encoded
+        public static byte[] encode(byte[] data, int[] parts)
         {
             byte result = data[0];
             for (int i = 1; i < parts.Count(); i++)
